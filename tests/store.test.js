@@ -77,6 +77,13 @@ test("upsertLink can add, move, and delete links within a group", () => {
   const groupId = state.groups[0].id;
   state = upsertLink(state, {
     groupId,
+    title: "GitHub",
+    url: "https://github.com/",
+    description: "",
+    icon: "",
+  });
+  state = upsertLink(state, {
+    groupId,
     title: "Linear",
     url: "https://linear.app/",
     description: "Issue tracking",
@@ -87,7 +94,7 @@ test("upsertLink can add, move, and delete links within a group", () => {
   assert.equal(addedLink.title, "Linear");
 
   state = moveLink(state, groupId, addedLink.id, "up");
-  assert.equal(state.groups[0].links.at(-2).id, addedLink.id);
+  assert.equal(state.groups[0].links[0].id, addedLink.id);
 
   state = deleteLink(state, groupId, addedLink.id);
   assert.equal(state.groups[0].links.some((link) => link.id === addedLink.id), false);
@@ -113,6 +120,11 @@ test("recordVisit keeps recent items unique and capped", () => {
 
 test("quick access only accepts saved links and stays capped", () => {
   let state = createDefaultState();
+  state = upsertLink(state, { groupId: state.groups[0].id, title: "bilibili", url: "https://www.bilibili.com/" });
+  state = upsertLink(state, { groupId: state.groups[0].id, title: "YouTube", url: "https://www.youtube.com/" });
+  state = upsertLink(state, { groupId: state.groups[0].id, title: "Twitch", url: "https://www.twitch.tv/" });
+  state = upsertLink(state, { groupId: state.groups[1].id, title: "GitHub", url: "https://github.com/" });
+  state = upsertLink(state, { groupId: state.groups[2].id, title: "Pixiv", url: "https://www.pixiv.net/" });
   const savedLinks = state.groups.flatMap((group) =>
     group.links.map((link) => ({ groupId: group.id, linkId: link.id })),
   );
@@ -135,6 +147,8 @@ test("quick access only accepts saved links and stays capped", () => {
 
 test("quick access can move, remove, and auto-cleans when source link is deleted", () => {
   let state = createDefaultState();
+  state = upsertLink(state, { groupId: state.groups[0].id, title: "bilibili", url: "https://www.bilibili.com/" });
+  state = upsertLink(state, { groupId: state.groups[0].id, title: "YouTube", url: "https://www.youtube.com/" });
   const groupId = state.groups[0].id;
   const firstLinkId = state.groups[0].links[0].id;
   const secondLinkId = state.groups[0].links[1].id;

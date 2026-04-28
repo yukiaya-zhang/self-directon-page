@@ -39,29 +39,7 @@ export function createDefaultState() {
         description: "",
         icon: "",
         accent: "#1f6d67",
-        links: [
-          {
-            id: "link-bilibili",
-            title: "bilibili",
-            url: "https://www.bilibili.com/",
-            description: "",
-            icon: "",
-          },
-          {
-            id: "link-youtube",
-            title: "YouTube",
-            url: "https://www.youtube.com/",
-            description: "",
-            icon: "",
-          },
-          {
-            id: "link-twitch",
-            title: "Twitch",
-            url: "https://www.twitch.tv/",
-            description: "",
-            icon: "",
-          },
-        ],
+        links: [],
       },
       {
         id: "group-learning",
@@ -69,15 +47,7 @@ export function createDefaultState() {
         description: "",
         icon: "",
         accent: "#6b7353",
-        links: [
-          {
-            id: "link-github",
-            title: "GitHub",
-            url: "https://github.com/",
-            description: "",
-            icon: "",
-          },
-        ],
+        links: [],
       },
       {
         id: "group-acg",
@@ -85,29 +55,7 @@ export function createDefaultState() {
         description: "",
         icon: "",
         accent: "#c17747",
-        links: [
-          {
-            id: "link-pixiv",
-            title: "Pixiv",
-            url: "https://www.pixiv.net/",
-            description: "",
-            icon: "",
-          },
-          {
-            id: "link-fanbox",
-            title: "FANBOX",
-            url: "https://www.fanbox.cc/",
-            description: "",
-            icon: "",
-          },
-          {
-            id: "link-moegirl",
-            title: "萌娘百科",
-            url: "https://zh.moegirl.org.cn/",
-            description: "",
-            icon: "",
-          },
-        ],
+        links: [],
       },
     ],
   };
