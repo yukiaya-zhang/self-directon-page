@@ -992,14 +992,19 @@ body[data-theme="dark"] .search-panel input::placeholder {
   place-items: center;
   border-radius: 16px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.68);
+  background: var(--group-tone-bg, rgba(255, 255, 255, 0.68));
+  color: var(--group-tone-fg, inherit);
+  box-shadow: inset 0 0 0 1px var(--group-tone-border, rgba(11, 87, 208, 0.05));
+  transition:
+    background 220ms cubic-bezier(0.2, 0, 0, 1),
+    color 220ms cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 220ms cubic-bezier(0.2, 0, 0, 1);
 }
 
 .group-card__badge {
   width: 56px;
   height: 56px;
-  color: var(--primary-strong);
-  box-shadow: inset 0 0 0 1px rgba(11, 87, 208, 0.05);
+  color: var(--group-tone-fg, var(--primary-strong));
 }
 
 .group-card__badge img,
@@ -1083,6 +1088,7 @@ body[data-theme="dark"] .search-panel input::placeholder {
 .group-card--add .group-card__badge--add {
   background: var(--surface-container);
   color: var(--text-soft);
+  box-shadow: inset 0 0 0 1px rgba(11, 87, 208, 0.05);
 }
 
 .group-card--add .group-card__title,
@@ -1219,8 +1225,9 @@ body[data-theme="dark"] .search-panel input::placeholder {
 
 .group-links-modal__link:hover .link-icon,
 .recent-entry:hover .link-icon {
-  color: var(--primary-strong);
-  background: var(--surface-strong);
+  color: var(--group-tone-fg-hover, var(--primary-strong));
+  background: var(--group-tone-bg-hover, var(--surface-strong));
+  box-shadow: inset 0 0 0 1px var(--group-tone-border-hover, rgba(11, 87, 208, 0.08));
 }
 
 .sidebar {

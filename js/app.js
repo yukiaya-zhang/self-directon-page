@@ -1013,6 +1013,116 @@ function getGroupSymbol(group) {
   return map[id] || map[title] || "apps";
 }
 
+function clampChannel(value) {
+  return Math.max(0, Math.min(255, Math.round(value)));
+}
+
+function parseAccentColor(value) {
+  const input = String(value || "").trim();
+  const hexMatch = input.match(/^#([\da-f]{3}|[\da-f]{6})$/i);
+  if (hexMatch) {
+    const hex = hexMatch[1];
+    if (hex.length === 3) {
+      return {
+        r: Number.parseInt(`${hex[0]}${hex[0]}`, 16),
+        g: Number.parseInt(`${hex[1]}${hex[1]}`, 16),
+        b: Number.parseInt(`${hex[2]}${hex[2]}`, 16),
+      };
+    }
+
+    return {
+      r: Number.parseInt(hex.slice(0, 2), 16),
+      g: Number.parseInt(hex.slice(2, 4), 16),
+      b: Number.parseInt(hex.slice(4, 6), 16),
+    };
+  }
+
+  const rgbMatch = input.match(/^rgba?\(([^)]+)\)$/i);
+  if (rgbMatch) {
+    const [r = 95, g = 99, b = 104] = rgbMatch[1]
+      .split(",")
+      .slice(0, 3)
+      .map((channel) => clampChannel(Number.parseFloat(channel)));
+    return { r, g, b };
+  }
+
+  return { r: 95, g: 99, b: 104 };
+}
+
+function mixColor(colorA, colorB, amount) {
+  const weight = Math.max(0, Math.min(1, amount));
+  return {
+    r: clampChannel(colorA.r + (colorB.r - colorA.r) * weight),
+    g: clampChannel(colorA.g + (colorB.g - colorA.g) * weight),
+    b: clampChannel(colorA.b + (colorB.b - colorA.b) * weight),
+  };
+}
+
+function toRgba(color, alpha = 1) {
+  return `rgba(${clampChannel(color.r)}, ${clampChannel(color.g)}, ${clampChannel(color.b)}, ${alpha})`;
+}
+
+function getNeutralColor(name) {
+  const palette = {
+    white: { r: 255, g: 255, b: 255 },
+    black: { r: 0, g: 0, b: 0 },
+    slate: { r: 95, g: 99, b: 104 },
+    graphite: { r: 56, g: 60, b: 67 },
+    ink: { r: 31, g: 31, b: 31 },
+    night: { r: 32, g: 33, b: 36 },
+    mist: { r: 232, g: 234, b: 237 },
+  };
+  return palette[name] || palette.slate;
+}
+
+function getSoftGroupTone(accentValue) {
+  const accent = parseAccentColor(accentValue);
+  const resolvedTheme = getResolvedTheme();
+
+  if (resolvedTheme === "dark") {
+    const background = mixColor(accent, getNeutralColor("night"), 0.68);
+    const foreground = mixColor(accent, getNeutralColor("mist"), 0.42);
+    const hoverBackground = mixColor(accent, getNeutralColor("night"), 0.58);
+    const hoverForeground = mixColor(accent, getNeutralColor("white"), 0.48);
+    return {
+      background: toRgba(background, 0.92),
+      foreground: toRgba(foreground, 0.98),
+      border: toRgba(mixColor(accent, getNeutralColor("mist"), 0.18), 0.2),
+      hoverBackground: toRgba(hoverBackground, 0.96),
+      hoverForeground: toRgba(hoverForeground, 1),
+      hoverBorder: toRgba(mixColor(accent, getNeutralColor("mist"), 0.24), 0.28),
+    };
+  }
+
+  const background = mixColor(accent, getNeutralColor("white"), 0.84);
+  const foreground = mixColor(accent, getNeutralColor("graphite"), 0.24);
+  const hoverBackground = mixColor(accent, getNeutralColor("white"), 0.77);
+  const hoverForeground = mixColor(accent, getNeutralColor("ink"), 0.18);
+  return {
+    background: toRgba(background, 0.92),
+    foreground: toRgba(foreground, 0.96),
+    border: toRgba(mixColor(accent, getNeutralColor("white"), 0.34), 0.72),
+    hoverBackground: toRgba(hoverBackground, 0.96),
+    hoverForeground: toRgba(hoverForeground, 1),
+    hoverBorder: toRgba(mixColor(accent, getNeutralColor("white"), 0.24), 0.82),
+  };
+}
+
+function getToneStyleVariables(tone) {
+  if (!tone || typeof tone !== "object") return "";
+  const entries = [
+    ["--group-tone-bg", tone.background],
+    ["--group-tone-fg", tone.foreground],
+    ["--group-tone-border", tone.border],
+    ["--group-tone-bg-hover", tone.hoverBackground],
+    ["--group-tone-fg-hover", tone.hoverForeground],
+    ["--group-tone-border-hover", tone.hoverBorder],
+  ].filter(([, value]) => value);
+
+  if (!entries.length) return "";
+  return entries.map(([key, value]) => `${key}:${value}`).join(";");
+}
+
 function getHostName(url) {
   try {
     return new URL(url).hostname.toLowerCase();
@@ -1235,13 +1345,15 @@ function getSiteIconSvg(iconId) {
   return icons[iconId] || icons.generic;
 }
 
-function iconMarkup(link, background) {
+function iconMarkup(link, tone = null) {
   const candidates = getFaviconCandidates(link.url);
   const serializedCandidates = escapeHtml(JSON.stringify(candidates));
+  const toneStyle = getToneStyleVariables(tone);
+  const styleAttribute = toneStyle ? ` style="${escapeHtml(toneStyle)}"` : "";
 
   if (candidates.length) {
     return `
-      <span class="link-icon link-icon--favicon">
+      <span class="link-icon link-icon--favicon"${styleAttribute}>
         <img
           class="link-icon__image"
           src="${escapeHtml(candidates[0])}"
@@ -1257,7 +1369,7 @@ function iconMarkup(link, background) {
   }
 
   return `
-    <span class="link-icon link-icon--system link-icon--fallback">
+    <span class="link-icon link-icon--system link-icon--fallback"${styleAttribute}>
       ${getSiteIconSvg("generic")}
     </span>
   `;
@@ -1307,6 +1419,8 @@ function renderHero() {
 function renderGroups() {
   const groupCards = state.groups
     .map((group) => {
+      const tone = getSoftGroupTone(group.accent);
+      const toneStyle = getToneStyleVariables(tone);
       return `
         <button
           class="group-card group-card--launcher"
@@ -1315,7 +1429,7 @@ function renderGroups() {
           aria-label="${escapeHtml(t("home.openGroup", { title: group.title }))}"
         >
           <div class="group-card__header">
-            <span class="group-card__badge group-card__badge--launcher" style="background:${group.accent}">
+            <span class="group-card__badge group-card__badge--launcher"${toneStyle ? ` style="${escapeHtml(toneStyle)}"` : ""}>
               <span class="material-symbols-rounded group-card__symbol" aria-hidden="true">
                 ${escapeHtml(getGroupSymbol(group))}
               </span>
@@ -1364,6 +1478,7 @@ function renderGroupViewer() {
   }
 
   els.groupLinksModalTitle.textContent = group.title;
+  const tone = getSoftGroupTone(group.accent);
   els.groupLinksModalBody.innerHTML = `
     <div class="group-links-modal__grid">
       ${
@@ -1379,7 +1494,7 @@ function renderGroupViewer() {
                     data-link-id="${escapeHtml(link.id)}"
                     data-group-id="${escapeHtml(group.id)}"
                   >
-                    ${iconMarkup(link, `${group.accent}`)}
+                    ${iconMarkup(link, tone)}
                     <span class="group-card__link-text">
                       <strong>${escapeHtml(link.title)}</strong>
                     </span>
