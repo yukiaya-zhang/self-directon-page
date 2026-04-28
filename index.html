@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="meta.title">Self Direction Page</title>
+    <meta
+      name="description"
+      content="A deployable personal start page for daily navigation, editing, and quick access."
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,500,0,0"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-background" id="pageBackground" aria-hidden="true"></div>
+    <div class="page-shell">
+      <div class="page-shell__glow page-shell__glow--left"></div>
+      <div class="page-shell__glow page-shell__glow--right"></div>
+
+      <header class="topbar">
+        <div class="topbar__actions">
+          <button class="icon-button icon-button--theme" type="button" id="themeToggle" aria-label="Switch to dark mode">
+            <span class="theme-toggle__icon" aria-hidden="true">
+              <span class="material-symbols-rounded theme-toggle__glyph theme-toggle__glyph--sun">light_mode</span>
+              <span class="material-symbols-rounded theme-toggle__glyph theme-toggle__glyph--moon">dark_mode</span>
+            </span>
+          </button>
+          <button class="icon-button icon-button--settings" type="button" id="editToggle" aria-label="Open settings">
+            <span class="material-symbols-rounded" aria-hidden="true">settings</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="hero card">
+          <div class="hero__time">
+            <p class="hero__clock" id="clockDisplay">09:42</p>
+            <p class="hero__date" id="dateDisplay">Wednesday, April 26</p>
+          </div>
+
+          <form class="search-panel" id="searchForm" autocomplete="off">
+            <div class="search-panel__input-wrap">
+              <label class="search-panel__engine" for="searchEngine">
+                <span class="search-panel__engine-display" aria-hidden="true">
+                  <img id="searchEngineIcon" class="search-panel__engine-icon" src="" alt="" />
+                  <span class="material-symbols-rounded search-panel__engine-chevron">expand_more</span>
+                </span>
+                <select id="searchEngine" name="searchEngine" aria-label="选择搜索引擎">
+                  <option value="bing">Bing</option>
+                  <option value="google">Google</option>
+                  <option value="wikipedia">Wikipedia</option>
+                </select>
+              </label>
+              <input
+                id="searchInput"
+                name="query"
+                type="search"
+                placeholder="Search with Bing"
+                autocomplete="off"
+                autocapitalize="off"
+                autocorrect="off"
+                spellcheck="false"
+                enterkeyhint="search"
+              />
+               <button type="submit" data-i18n="common.search">Search</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="navigation-area">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow" data-i18n="home.curatedAccess">Curated access</p>
+              <h3 data-i18n="home.yourSpaces">Your spaces</h3>
+            </div>
+            <p class="section-heading__note" data-i18n="home.controlRoom">Open links in a new tab and keep this page as your control room.</p>
+          </div>
+
+          <div class="group-grid" id="groupGrid"></div>
+        </section>
+
+        <aside class="sidebar">
+          <section class="widget widget--weather card" id="weatherWidget"></section>
+
+          <section class="widget card">
+            <div class="widget__header">
+              <div>
+                <p class="eyebrow" data-i18n="recent.eyebrow">Recent</p>
+                <h3 data-i18n="recent.title">Visits</h3>
+              </div>
+              <button class="text-button" type="button" id="clearRecentButton" data-i18n="common.clear">Clear</button>
+            </div>
+            <div class="recent-list" id="recentList"></div>
+          </section>
+
+          <section class="widget card">
+            <div class="widget__header">
+              <div>
+                <p class="eyebrow" data-i18n="quickAccess.eyebrow">Quick</p>
+                <h3 data-i18n="quickAccess.title">Quick Access</h3>
+              </div>
+              <button class="icon-button icon-button--compact" type="button" id="quickAccessMenuButton" aria-label="Edit quick access">
+                <span class="material-symbols-rounded" aria-hidden="true">more_horiz</span>
+              </button>
+            </div>
+            <div class="recent-list quick-access-list" id="quickAccessList"></div>
+          </section>
+
+          <section class="widget card">
+            <div class="widget__header">
+              <div>
+                <p class="eyebrow" data-i18n="note.eyebrow">Custom</p>
+                <h3 id="noteTitleDisplay">Focus note</h3>
+              </div>
+            </div>
+            <ul class="note-list" id="noteList"></ul>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <aside class="editor-drawer" id="editorDrawer" aria-hidden="true">
+      <div class="editor-drawer__backdrop" id="drawerBackdrop"></div>
+      <div class="editor-drawer__panel">
+        <header class="editor-drawer__header">
+          <div class="editor-drawer__header-main">
+            <button class="text-button editor-drawer__back" type="button" id="editorBackButton" hidden>
+              <span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>
+              <span data-i18n="common.back">Back</span>
+            </button>
+            <div>
+              <p class="eyebrow" id="editorDrawerEyebrow">Settings</p>
+              <h2 id="editorDrawerTitle">Page settings</h2>
+            </div>
+          </div>
+          <button class="icon-button" type="button" id="closeDrawerButton" aria-label="Close editor">
+            &times;
+          </button>
+        </header>
+
+        <div class="editor-drawer__body">
+          <div class="editor-home" id="editorHomePage" data-editor-page="home">
+            <button class="editor-nav-card" type="button" data-editor-nav="notes">
+              <span class="editor-nav-card__copy">
+                <strong data-i18n="settings.notes">Notes</strong>
+                <span data-i18n="settings.notesSummary">Edit the custom note shown on the home page.</span>
+              </span>
+              <span class="material-symbols-rounded editor-nav-card__icon" aria-hidden="true">chevron_right</span>
+            </button>
+            <button class="editor-nav-card" type="button" data-editor-nav="groups">
+              <span class="editor-nav-card__copy">
+                <strong data-i18n="settings.groups">Groups</strong>
+                <span data-i18n="settings.groupsSummary">Create, rename, reorder, and remove navigation sections.</span>
+              </span>
+              <span class="material-symbols-rounded editor-nav-card__icon" aria-hidden="true">chevron_right</span>
+            </button>
+            <button class="editor-nav-card" type="button" data-editor-nav="links">
+              <span class="editor-nav-card__copy">
+                <strong data-i18n="settings.links">Links</strong>
+                <span data-i18n="settings.linksSummary">Manage shortcuts and their destinations.</span>
+              </span>
+              <span class="material-symbols-rounded editor-nav-card__icon" aria-hidden="true">chevron_right</span>
+            </button>
+            <button class="editor-nav-card" type="button" data-editor-nav="background">
+              <span class="editor-nav-card__copy">
+                <strong data-i18n="settings.background">Background</strong>
+                <span data-i18n="settings.backgroundSummary">Set a custom page background for this browser only.</span>
+              </span>
+              <span class="material-symbols-rounded editor-nav-card__icon" aria-hidden="true">chevron_right</span>
+            </button>
+            <button class="editor-nav-card" type="button" data-editor-nav="language">
+              <span class="editor-nav-card__copy">
+                <strong data-i18n="settings.language">Language</strong>
+                <span data-i18n="settings.languageSummary">Change interface text without changing your custom content.</span>
+              </span>
+              <span class="material-symbols-rounded editor-nav-card__icon" aria-hidden="true">chevron_right</span>
+            </button>
+            <button class="editor-nav-card" type="button" data-editor-nav="backup">
+              <span class="editor-nav-card__copy">
+                <strong data-i18n="settings.backup">Backup</strong>
+                <span data-i18n="settings.backupSummary">Move your configuration between browsers or devices.</span>
+              </span>
+              <span class="material-symbols-rounded editor-nav-card__icon" aria-hidden="true">chevron_right</span>
+            </button>
+            <button class="editor-nav-card editor-nav-card--danger" type="button" data-editor-nav="danger">
+              <span class="editor-nav-card__copy">
+                <strong data-i18n="settings.danger">Danger zone</strong>
+                <span data-i18n="settings.dangerSummary">Reset all groups, links, notes, and recent visits for this page.</span>
+              </span>
+              <span class="material-symbols-rounded editor-nav-card__icon" aria-hidden="true">chevron_right</span>
+            </button>
+          </div>
+
+          <div class="editor-detail-page" id="editorNotesPage" data-editor-page="notes" hidden>
+            <section class="editor-section">
+              <form class="stack-form" id="profileForm">
+                <label>
+                  <span data-i18n="settings.noteTitle">Note title</span>
+                  <input type="text" name="noteTitle" />
+                </label>
+                <label>
+                  <span data-i18n="settings.noteItems">Note items (one per line)</span>
+                  <textarea name="noteItems" rows="5"></textarea>
+                </label>
+                <button class="primary-button" type="submit" data-i18n="settings.saveNote">Save note</button>
+              </form>
+            </section>
+          </div>
+
+          <div class="editor-detail-page" id="editorGroupsPage" data-editor-page="groups" hidden>
+            <section class="editor-section">
+              <div class="editor-section__title-row">
+                <div>
+                  <h3 data-i18n="settings.groups">Groups</h3>
+                  <p data-i18n="settings.groupsDetail">Rename, reorder, and remove navigation sections. Add new groups from the home page.</p>
+                </div>
+              </div>
+              <div class="editor-list" id="groupEditorList"></div>
+            </section>
+          </div>
+
+          <div class="editor-detail-page" id="editorLinksPage" data-editor-page="links" hidden>
+            <section class="editor-section">
+              <div class="editor-section__title-row">
+                <div>
+                  <h3 data-i18n="settings.links">Links</h3>
+                  <p data-i18n="settings.linksDetail">Edit, reorder, and remove existing shortcuts. Add new websites from a group popup.</p>
+                </div>
+              </div>
+              <div class="editor-list" id="linkEditorList"></div>
+            </section>
+          </div>
+
+          <div class="editor-detail-page" id="editorQuickAccessPage" data-editor-page="quickAccess" hidden>
+            <div class="quick-access-editor" id="quickAccessEditorBody"></div>
+          </div>
+
+          <div class="editor-detail-page" id="editorBackgroundPage" data-editor-page="background" hidden>
+            <section class="editor-section">
+              <div class="backup-actions">
+                <label class="file-input">
+                  <span data-i18n="settings.uploadBackground">Upload background image</span>
+                  <input type="file" id="backgroundImageInput" accept="image/*" />
+                </label>
+                <button class="secondary-button" type="button" id="clearBackgroundButton" data-i18n="settings.clearBackground">Clear background</button>
+                <div class="background-preview" id="backgroundPreview">
+                  <span class="background-preview__empty" data-i18n="settings.noBackground">No custom background selected.</span>
+                </div>
+                <p class="editor-section__status" id="backgroundImageStatus">Using default background.</p>
+              </div>
+            </section>
+          </div>
+
+          <div class="editor-detail-page" id="editorLanguagePage" data-editor-page="language" hidden>
+            <section class="editor-section">
+              <div class="stack-form">
+                <label>
+                  <span data-i18n="settings.languageLabel">Interface language</span>
+                  <select id="languageSelect" name="language">
+                    <option value="en">English</option>
+                    <option value="zh-CN">简体中文</option>
+                    <option value="zh-HK">繁體中文（香港）</option>
+                    <option value="zh-TW">繁體中文（台灣）</option>
+                    <option value="ja">日本語</option>
+                  </select>
+                </label>
+                <p class="editor-section__status" data-i18n="settings.languageHint">Only built-in interface text changes. Your groups, links, notes, and city names stay as you wrote them.</p>
+              </div>
+            </section>
+          </div>
+
+          <div class="editor-detail-page" id="editorBackupPage" data-editor-page="backup" hidden>
+            <section class="editor-section">
+              <div class="backup-actions">
+                <button class="secondary-button" type="button" id="exportButton" data-i18n="settings.exportJson">Export JSON</button>
+                <label class="file-input">
+                  <span data-i18n="settings.importJson">Import JSON</span>
+                  <input type="file" id="importInput" accept="application/json" />
+                </label>
+              </div>
+            </section>
+          </div>
+
+          <div class="editor-detail-page" id="editorDangerPage" data-editor-page="danger" hidden>
+            <section class="editor-section editor-section--danger">
+              <div class="danger-actions">
+                <button class="secondary-button secondary-button--danger" type="button" id="resetButton">
+                  <span data-i18n="settings.resetPage">Reset page</span>
+                </button>
+                <div class="danger-confirm" id="resetConfirmPanel" hidden>
+                  <p class="editor-section__status" data-i18n="settings.resetWarning">This will restore the default navigation and clear your current page setup.</p>
+                  <div class="danger-confirm__actions">
+                    <button class="text-button" type="button" id="cancelResetButton" data-i18n="common.cancel">Cancel</button>
+                    <button class="primary-button primary-button--danger" type="button" id="confirmResetButton">
+                      <span data-i18n="settings.confirmReset">Yes, reset everything</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="modal-shell" id="groupModal" aria-hidden="true">
+      <div class="modal-shell__backdrop" data-close-dialog="groupModal"></div>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="groupModalTitle">
+        <form class="stack-form" id="groupModalForm">
+          <div class="modal__header">
+            <h3 id="groupModalTitle">Add group</h3>
+            <button class="icon-button" type="button" data-close-dialog="groupModal">&times;</button>
+          </div>
+          <input type="hidden" name="id" />
+          <label>
+            <span data-i18n="common.title">Title</span>
+            <input type="text" name="title" required />
+          </label>
+          <div class="modal__actions">
+            <button class="secondary-button" type="button" data-close-dialog="groupModal" data-i18n="common.cancel">Cancel</button>
+            <button class="primary-button" type="submit" data-i18n="settings.saveGroup">Save group</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal-shell" id="linkModal" aria-hidden="true">
+      <div class="modal-shell__backdrop" data-close-dialog="linkModal"></div>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="linkModalTitle">
+        <form class="stack-form" id="linkModalForm">
+          <div class="modal__header">
+            <h3 id="linkModalTitle">Add link</h3>
+            <button class="icon-button" type="button" data-close-dialog="linkModal">&times;</button>
+          </div>
+          <input type="hidden" name="id" />
+          <label id="linkGroupField">
+            <span data-i18n="settings.group">Group</span>
+            <select name="groupId" required></select>
+          </label>
+          <label>
+            <span data-i18n="common.title">Title</span>
+            <input type="text" name="title" required />
+          </label>
+          <label>
+            <span data-i18n="common.url">URL</span>
+            <input type="url" name="url" required placeholder="https://example.com" />
+          </label>
+          <div class="modal__actions">
+            <button class="secondary-button" type="button" data-close-dialog="linkModal" data-i18n="common.cancel">Cancel</button>
+            <button class="primary-button" type="submit" data-i18n="settings.saveLink">Save link</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal-shell" id="groupLinksModal" aria-hidden="true">
+      <div class="modal-shell__backdrop" data-close-dialog="groupLinksModal"></div>
+      <div class="modal group-links-modal" role="dialog" aria-modal="true" aria-labelledby="groupLinksModalTitle">
+        <div class="modal__header">
+          <h3 id="groupLinksModalTitle">分类网站</h3>
+          <button class="icon-button" type="button" data-close-dialog="groupLinksModal">&times;</button>
+        </div>
+        <div class="group-links-modal__body" id="groupLinksModalBody"></div>
+      </div>
+    </div>
+
+    <div class="modal-shell" id="quickAccessModal" aria-hidden="true">
+      <div class="modal-shell__backdrop" data-close-dialog="quickAccessModal"></div>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="quickAccessModalTitle">
+        <div class="modal__header">
+          <h3 id="quickAccessModalTitle">Quick Access</h3>
+          <button class="icon-button" type="button" data-close-dialog="quickAccessModal">&times;</button>
+        </div>
+        <div class="quick-access-modal__body" id="quickAccessModalBody"></div>
+      </div>
+    </div>
+
+    <script defer src="./js/store.browser.js"></script>
+    <script defer src="./js/app.js"></script>
+  </body>
+</html>
