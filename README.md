@@ -1,53 +1,61 @@
 # Self Direction Page
 
-A static personal navigation page built with plain HTML, CSS, and JavaScript.
+一个为个人日常使用设计的静态导航页，使用原生 `HTML + CSS + JavaScript` 实现，可直接本地打开，也可部署到 GitHub Pages。
 
-## Local use
+线上地址：
+[https://yukiaya-zhang.github.io/self-directon-page/](https://yukiaya-zhang.github.io/self-directon-page/)
 
-You can open `index.html` directly with `file://` for personal use, or serve the folder locally with any static file server.
+## 功能概览
 
-## GitHub Pages deployment
+- 默认保留 `日常`、`学习`、`二次元` 三个分组，不预置默认网站
+- 支持在页面内管理分组、网站链接和 `Quick Access`
+- 支持实时更新时间、主题切换、语言切换和真实天气卡片
+- 支持 `Recent` 最近访问记录与本地固定快捷入口
+- 支持自定义背景图，配置仅保存在当前浏览器
+- 兼容 `file://` 本地直开和 GitHub Pages 项目页部署
 
-This project is ready for GitHub Pages project-site deployment:
+## 本地使用
+
+这个项目不依赖构建工具。
+
+- 最简单的方式：直接双击 [index.html](C:/Users/25194/Desktop/Practical_Codes/SelfDirectionPage/index.html)
+- 也可以使用任意静态服务器在本地打开
+
+页面配置默认写入浏览器本地存储，不会自动跨设备同步。
+
+## 项目结构
+
+- [index.html](C:/Users/25194/Desktop/Practical_Codes/SelfDirectionPage/index.html)：页面骨架和各类弹层节点
+- [styles.css](C:/Users/25194/Desktop/Practical_Codes/SelfDirectionPage/styles.css)：整体视觉、响应式和组件样式
+- [js/app.js](C:/Users/25194/Desktop/Practical_Codes/SelfDirectionPage/js/app.js)：页面交互、渲染、天气、主题和设置逻辑
+- [js/store.js](C:/Users/25194/Desktop/Practical_Codes/SelfDirectionPage/js/store.js)：状态模型与纯逻辑存储函数
+- [js/store.browser.js](C:/Users/25194/Desktop/Practical_Codes/SelfDirectionPage/js/store.browser.js)：浏览器直开场景使用的存储实现
+- [tests/store.test.js](C:/Users/25194/Desktop/Practical_Codes/SelfDirectionPage/tests/store.test.js)：状态层回归测试
+
+## 部署
+
+当前仓库按 GitHub Pages 项目页方式发布，资源路径已保持为相对路径，适合部署到：
 
 `https://<username>.github.io/<repo-name>/`
 
-### 1. Create a GitHub repository
+如果需要重新部署：
 
-Create a normal repository, for example `self-direction-page`.
+1. 提交本地改动
+2. 推送到 `main`
+3. 在 GitHub 仓库的 `Settings -> Pages` 中确认来源为 `main` 分支 `/ (root)`
 
-### 2. Push this folder
+## 验证
 
-After initializing Git locally, add your GitHub repository as `origin` and push the `main` branch.
-
-Example:
+推荐在提交前至少检查两件事：
 
 ```bash
-git remote add origin https://github.com/<username>/<repo-name>.git
-git push -u origin main
+node --test
 ```
 
-### 3. Enable GitHub Pages
+- 浏览器中确认搜索、设置抽屉、分组弹窗、Quick Access、主题切换和天气组件可正常交互
 
-In GitHub:
+## 说明
 
-1. Open the repository
-2. Go to `Settings`
-3. Open `Pages`
-4. Under `Build and deployment`, choose:
-   - `Source`: `Deploy from a branch`
-   - `Branch`: `main`
-   - `Folder`: `/ (root)`
-
-GitHub will publish the site at:
-
-`https://<username>.github.io/<repo-name>/`
-
-## Updating the site
-
-Update the files, commit your changes, and push to `main`. GitHub Pages will redeploy automatically.
-
-## Notes
-
-- Local files are referenced with relative paths, so the project works under a GitHub Pages project subpath.
-- This version stays fully static. If you later want stronger favicon extraction or cloud sync, add that in a separate deployment phase.
+- favicon 目前以前端可直接获取的地址为主，部分网站可能因为自身图标策略无法稳定返回
+- 背景图、语言、主题、快捷入口等个性化设置仅保存在当前浏览器
+- 如果后续要增强图标抓取稳定性或做多设备同步，建议在部署版上追加后端服务
