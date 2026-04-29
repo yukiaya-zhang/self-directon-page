@@ -1,6 +1,7 @@
 (function () {
 const {
   STORAGE_KEY,
+  UNCATEGORIZED_GROUP_ID,
   addQuickAccess,
   createDefaultState,
   deleteGroup,
@@ -66,6 +67,7 @@ const TRANSLATIONS = {
     "common.delete": "Delete",
     "common.down": "Down",
     "common.edit": "Edit",
+    "common.move": "Move",
     "common.search": "Search",
     "common.title": "Title",
     "common.up": "Up",
@@ -75,14 +77,24 @@ const TRANSLATIONS = {
     "home.controlRoom": "Open links in a new tab and keep this page as your control room.",
     "home.curatedAccess": "Curated access",
     "home.groupLinks": "Group links",
+    "home.groupEmpty": "No websites in this group yet.",
     "home.openGroup": "Open {title} group",
     "home.siteCount": "{count} sites",
     "home.siteCountOne": "1 site",
     "home.yourSpaces": "Your spaces",
     "modal.addGroup": "Add group",
     "modal.addLink": "Add link",
+    "modal.addLinkChoice": "Add to {title}",
+    "modal.addLinkNew": "Create new website",
+    "modal.addLinkNewHint": "Add a brand-new website directly into this group.",
+    "modal.addLinkImport": "Import from Uncategorized",
+    "modal.addLinkImportHint": "Move one or more uncategorized websites into this group.",
     "modal.editGroup": "Edit group",
     "modal.editLink": "Edit link",
+    "modal.importHint": "Select uncategorized websites to move into {title}.",
+    "modal.importEmpty": "No uncategorized websites available.",
+    "modal.importSelected": "Import selected",
+    "modal.moveLink": "Move website",
     "note.eyebrow": "Custom",
     "recent.empty": "No recent visits yet.",
     "recent.eyebrow": "Recent",
@@ -126,9 +138,10 @@ const TRANSLATIONS = {
     "settings.languageLabel": "Interface language",
     "settings.languageSummary": "Change interface text without changing your custom content.",
     "settings.links": "Links",
-    "settings.linksDetail": "Edit, reorder, and remove existing shortcuts. Add new websites from a group popup.",
-    "settings.linksEmpty": "No links yet. Add websites from a group popup.",
-    "settings.linksSummary": "Manage shortcuts and their destinations.",
+    "settings.linksDetail": "Choose a group to manage its websites, or add a new website into Uncategorized.",
+    "settings.linksEmpty": "No websites yet. Add your first website here.",
+    "settings.linksSummary": "Browse groups and manage websites.",
+    "settings.addWebsite": "Add website",
     "settings.noBackground": "No custom background selected.",
     "settings.noteItems": "Note items (one per line)",
     "settings.noteTitle": "Note title",
@@ -141,6 +154,7 @@ const TRANSLATIONS = {
     "settings.saveLink": "Save link",
     "settings.saveNote": "Save note",
     "settings.title": "Settings",
+    "settings.uncategorizedGroup": "Uncategorized",
     "settings.uploadBackground": "Upload background image",
     "settings.closeEditor": "Close editor",
     "status.backgroundDefault": "Using default background.",
@@ -148,6 +162,8 @@ const TRANSLATIONS = {
     "status.backgroundProcessing": "Processing background image...",
     "status.backgroundSaved": "Custom background saved in this browser.",
     "status.backgroundUnsupported": "This image could not be used as a background.",
+    "confirm.deleteGroupMove": "Delete the \"{title}\" group and move its websites to Uncategorized?",
+    "confirm.deleteLink": "Delete the \"{title}\" website?",
     "theme.switchToDark": "Switch to dark mode",
     "theme.switchToLight": "Switch to light mode",
     "weather.changeCity": "Change city",
@@ -165,6 +181,7 @@ const TRANSLATIONS = {
     "common.delete": "删除",
     "common.down": "下移",
     "common.edit": "编辑",
+    "common.move": "移动",
     "common.search": "搜索",
     "common.title": "标题",
     "common.up": "上移",
@@ -174,14 +191,24 @@ const TRANSLATIONS = {
     "home.controlRoom": "在新标签页打开链接，让这里保持为你的控制台。",
     "home.curatedAccess": "快捷入口",
     "home.groupLinks": "分类网站",
+    "home.groupEmpty": "这个分类里还没有网站。",
     "home.openGroup": "打开 {title} 分类",
     "home.siteCount": "{count} 个网站",
     "home.siteCountOne": "1 个网站",
     "home.yourSpaces": "你的分组",
     "modal.addGroup": "添加分类",
     "modal.addLink": "添加网站",
+    "modal.addLinkChoice": "添加到 {title}",
+    "modal.addLinkNew": "新添加网址",
+    "modal.addLinkNewHint": "直接在当前分类中新建一个网站。",
+    "modal.addLinkImport": "从未分类网址导入",
+    "modal.addLinkImportHint": "把一个或多个未分类网站移动到当前分类。",
     "modal.editGroup": "编辑分类",
     "modal.editLink": "编辑网站",
+    "modal.importHint": "选择要移动到 {title} 的未分类网站。",
+    "modal.importEmpty": "当前没有可导入的未分类网站。",
+    "modal.importSelected": "导入所选",
+    "modal.moveLink": "移动网站",
     "note.eyebrow": "自定义",
     "recent.empty": "还没有最近访问记录。",
     "recent.eyebrow": "最近",
@@ -225,9 +252,10 @@ const TRANSLATIONS = {
     "settings.languageLabel": "界面语言",
     "settings.languageSummary": "切换界面文本，不改变自定义内容。",
     "settings.links": "网站",
-    "settings.linksDetail": "编辑、排序和删除已有网站。新增网站请从分类弹窗进入。",
-    "settings.linksEmpty": "还没有网站。请从分类弹窗添加网站。",
-    "settings.linksSummary": "管理快捷网站和目标地址。",
+    "settings.linksDetail": "先选择分类进入对应网站页，或直接新增到未分类。",
+    "settings.linksEmpty": "还没有网站。在这里添加你的第一个网站。",
+    "settings.linksSummary": "浏览分类并管理网站。",
+    "settings.addWebsite": "添加网站",
     "settings.noBackground": "未选择自定义背景。",
     "settings.noteItems": "备注项目（每行一个）",
     "settings.noteTitle": "备注标题",
@@ -240,6 +268,7 @@ const TRANSLATIONS = {
     "settings.saveLink": "保存网站",
     "settings.saveNote": "保存备注",
     "settings.title": "设置",
+    "settings.uncategorizedGroup": "未分类",
     "settings.uploadBackground": "上传背景图片",
     "settings.closeEditor": "关闭设置",
     "status.backgroundDefault": "正在使用默认背景。",
@@ -247,6 +276,8 @@ const TRANSLATIONS = {
     "status.backgroundProcessing": "正在处理背景图片...",
     "status.backgroundSaved": "自定义背景已保存在当前浏览器。",
     "status.backgroundUnsupported": "这张图片无法作为背景使用。",
+    "confirm.deleteGroupMove": "删除“{title}”分类，并把其中的网站移动到未分类？",
+    "confirm.deleteLink": "删除“{title}”网站？",
     "theme.switchToDark": "切换到深色模式",
     "theme.switchToLight": "切换到浅色模式",
     "weather.changeCity": "切换城市",
@@ -264,6 +295,8 @@ const TRANSLATIONS = {
     "common.delete": "刪除",
     "common.down": "下移",
     "common.edit": "編輯",
+    "common.move": "移動",
+    "common.move": "移動",
     "common.search": "搜尋",
     "common.title": "標題",
     "common.up": "上移",
@@ -273,14 +306,24 @@ const TRANSLATIONS = {
     "home.controlRoom": "連結會在新分頁開啟，讓這裏保持為你的控制台。",
     "home.curatedAccess": "快捷入口",
     "home.groupLinks": "分類網站",
+    "home.groupEmpty": "這個分類裡還沒有網站。",
     "home.openGroup": "開啟 {title} 分類",
     "home.siteCount": "{count} 個網站",
     "home.siteCountOne": "1 個網站",
     "home.yourSpaces": "你的分組",
     "modal.addGroup": "新增分類",
     "modal.addLink": "新增網站",
+    "modal.addLinkChoice": "新增到 {title}",
+    "modal.addLinkNew": "新添加網址",
+    "modal.addLinkNewHint": "直接在目前分類中新建一個網站。",
+    "modal.addLinkImport": "從未分類網站匯入",
+    "modal.addLinkImportHint": "把一個或多個未分類網站移動到目前分類。",
     "modal.editGroup": "編輯分類",
     "modal.editLink": "編輯網站",
+    "modal.importHint": "選擇要移動到 {title} 的未分類網站。",
+    "modal.importEmpty": "目前沒有可匯入的未分類網站。",
+    "modal.importSelected": "匯入所選",
+    "modal.moveLink": "移動網站",
     "note.eyebrow": "自訂",
     "recent.empty": "尚未有最近訪問紀錄。",
     "recent.eyebrow": "最近",
@@ -324,9 +367,10 @@ const TRANSLATIONS = {
     "settings.languageLabel": "介面語言",
     "settings.languageSummary": "切換介面文字，不改變自訂內容。",
     "settings.links": "網站",
-    "settings.linksDetail": "編輯、排序和刪除現有網站。新增網站請從分類彈窗進入。",
-    "settings.linksEmpty": "尚未有網站。請從分類彈窗新增網站。",
-    "settings.linksSummary": "管理快捷網站和目標網址。",
+    "settings.linksDetail": "先選擇分類進入對應網站頁，或直接新增到未分類。",
+    "settings.linksEmpty": "尚未有網站。請先在這裡新增第一個網站。",
+    "settings.linksSummary": "瀏覽分類並管理網站。",
+    "settings.addWebsite": "新增網站",
     "settings.noBackground": "未選擇自訂背景。",
     "settings.noteItems": "備註項目（每行一個）",
     "settings.noteTitle": "備註標題",
@@ -339,6 +383,7 @@ const TRANSLATIONS = {
     "settings.saveLink": "儲存網站",
     "settings.saveNote": "儲存備註",
     "settings.title": "設定",
+    "settings.uncategorizedGroup": "未分類",
     "settings.uploadBackground": "上載背景圖片",
     "settings.closeEditor": "關閉設定",
     "status.backgroundDefault": "正在使用預設背景。",
@@ -346,6 +391,8 @@ const TRANSLATIONS = {
     "status.backgroundProcessing": "正在處理背景圖片...",
     "status.backgroundSaved": "自訂背景已儲存在目前瀏覽器。",
     "status.backgroundUnsupported": "這張圖片無法作為背景使用。",
+    "confirm.deleteGroupMove": "刪除「{title}」分類，並把其中的網站移到未分類？",
+    "confirm.deleteLink": "刪除「{title}」網站？",
     "theme.switchToDark": "切換至深色模式",
     "theme.switchToLight": "切換至淺色模式",
     "weather.changeCity": "切換城市",
@@ -372,14 +419,24 @@ const TRANSLATIONS = {
     "home.controlRoom": "連結會在新分頁開啟，讓這裡保持為你的控制台。",
     "home.curatedAccess": "快捷入口",
     "home.groupLinks": "分類網站",
+    "home.groupEmpty": "這個分類裡還沒有網站。",
     "home.openGroup": "開啟 {title} 分類",
     "home.siteCount": "{count} 個網站",
     "home.siteCountOne": "1 個網站",
     "home.yourSpaces": "你的分組",
     "modal.addGroup": "新增分類",
     "modal.addLink": "新增網站",
+    "modal.addLinkChoice": "新增到 {title}",
+    "modal.addLinkNew": "新添加網址",
+    "modal.addLinkNewHint": "直接在目前分類中新建一個網站。",
+    "modal.addLinkImport": "從未分類網站匯入",
+    "modal.addLinkImportHint": "把一個或多個未分類網站移動到目前分類。",
     "modal.editGroup": "編輯分類",
     "modal.editLink": "編輯網站",
+    "modal.importHint": "選擇要移動到 {title} 的未分類網站。",
+    "modal.importEmpty": "目前沒有可匯入的未分類網站。",
+    "modal.importSelected": "匯入所選",
+    "modal.moveLink": "移動網站",
     "note.eyebrow": "自訂",
     "recent.empty": "尚未有最近造訪紀錄。",
     "recent.eyebrow": "最近",
@@ -423,9 +480,10 @@ const TRANSLATIONS = {
     "settings.languageLabel": "介面語言",
     "settings.languageSummary": "切換介面文字，不改變自訂內容。",
     "settings.links": "網站",
-    "settings.linksDetail": "編輯、排序和刪除現有網站。新增網站請從分類彈窗進入。",
-    "settings.linksEmpty": "尚未有網站。請從分類彈窗新增網站。",
-    "settings.linksSummary": "管理快捷網站和目標網址。",
+    "settings.linksDetail": "先選擇分類進入對應網站頁，或直接新增到未分類。",
+    "settings.linksEmpty": "尚未有網站。請先在這裡新增第一個網站。",
+    "settings.linksSummary": "瀏覽分類並管理網站。",
+    "settings.addWebsite": "新增網站",
     "settings.noBackground": "未選擇自訂背景。",
     "settings.noteItems": "備註項目（每行一個）",
     "settings.noteTitle": "備註標題",
@@ -438,6 +496,7 @@ const TRANSLATIONS = {
     "settings.saveLink": "儲存網站",
     "settings.saveNote": "儲存備註",
     "settings.title": "設定",
+    "settings.uncategorizedGroup": "未分類",
     "settings.uploadBackground": "上傳背景圖片",
     "settings.closeEditor": "關閉設定",
     "status.backgroundDefault": "正在使用預設背景。",
@@ -445,6 +504,8 @@ const TRANSLATIONS = {
     "status.backgroundProcessing": "正在處理背景圖片...",
     "status.backgroundSaved": "自訂背景已儲存在目前瀏覽器。",
     "status.backgroundUnsupported": "這張圖片無法作為背景使用。",
+    "confirm.deleteGroupMove": "刪除「{title}」分類，並把其中的網站移到未分類？",
+    "confirm.deleteLink": "刪除「{title}」網站？",
     "theme.switchToDark": "切換至深色模式",
     "theme.switchToLight": "切換至淺色模式",
     "weather.changeCity": "切換城市",
@@ -462,6 +523,7 @@ const TRANSLATIONS = {
     "common.delete": "削除",
     "common.down": "下へ",
     "common.edit": "編集",
+    "common.move": "移動",
     "common.search": "検索",
     "common.title": "タイトル",
     "common.up": "上へ",
@@ -471,14 +533,24 @@ const TRANSLATIONS = {
     "home.controlRoom": "リンクは新しいタブで開き、このページをコントロールルームとして保ちます。",
     "home.curatedAccess": "クイックアクセス",
     "home.groupLinks": "分類内のサイト",
+    "home.groupEmpty": "この分類にはまだサイトがありません。",
     "home.openGroup": "{title} を開く",
     "home.siteCount": "{count} 件のサイト",
     "home.siteCountOne": "1 件のサイト",
     "home.yourSpaces": "あなたの分類",
     "modal.addGroup": "分類を追加",
     "modal.addLink": "サイトを追加",
+    "modal.addLinkChoice": "{title} に追加",
+    "modal.addLinkNew": "新しく追加",
+    "modal.addLinkNewHint": "この分類に新しいサイトを直接追加します。",
+    "modal.addLinkImport": "未分類から取り込む",
+    "modal.addLinkImportHint": "未分類のサイトを 1 件以上この分類へ移動します。",
     "modal.editGroup": "分類を編集",
     "modal.editLink": "サイトを編集",
+    "modal.importHint": "{title} に移動する未分類サイトを選択します。",
+    "modal.importEmpty": "取り込める未分類サイトはありません。",
+    "modal.importSelected": "選択項目を取り込む",
+    "modal.moveLink": "サイトを移動",
     "note.eyebrow": "カスタム",
     "recent.empty": "最近の訪問はまだありません。",
     "recent.eyebrow": "最近",
@@ -519,9 +591,10 @@ const TRANSLATIONS = {
     "settings.languageLabel": "表示言語",
     "settings.languageSummary": "カスタム内容を変えずに UI テキストを切り替えます。",
     "settings.links": "サイト",
-    "settings.linksDetail": "既存サイトの編集、並べ替え、削除を行います。新しいサイトは分類ポップアップから追加します。",
-    "settings.linksEmpty": "サイトはまだありません。分類ポップアップから追加してください。",
-    "settings.linksSummary": "ショートカットとリンク先を管理します。",
+    "settings.linksDetail": "まずカテゴリを選んでサイト一覧を管理するか、未分類へ新しいサイトを追加します。",
+    "settings.linksEmpty": "サイトはまだありません。ここから最初のサイトを追加してください。",
+    "settings.linksSummary": "カテゴリを見ながらサイトを管理します。",
+    "settings.addWebsite": "サイトを追加",
     "settings.noBackground": "カスタム背景は選択されていません。",
     "settings.noteItems": "メモ項目（1 行に 1 つ）",
     "settings.noteTitle": "メモのタイトル",
@@ -534,6 +607,7 @@ const TRANSLATIONS = {
     "settings.saveLink": "サイトを保存",
     "settings.saveNote": "メモを保存",
     "settings.title": "設定",
+    "settings.uncategorizedGroup": "未分類",
     "settings.uploadBackground": "背景画像をアップロード",
     "settings.closeEditor": "設定を閉じる",
     "status.backgroundDefault": "既定の背景を使用しています。",
@@ -541,6 +615,8 @@ const TRANSLATIONS = {
     "status.backgroundProcessing": "背景画像を処理しています...",
     "status.backgroundSaved": "カスタム背景をこのブラウザに保存しました。",
     "status.backgroundUnsupported": "この画像は背景として使用できません。",
+    "confirm.deleteGroupMove": "「{title}」分類を削除し、中のサイトを未分類へ移動しますか？",
+    "confirm.deleteLink": "「{title}」サイトを削除しますか？",
     "theme.switchToDark": "ダークモードに切り替え",
     "theme.switchToLight": "ライトモードに切り替え",
     "weather.changeCity": "都市を切り替え",
@@ -648,6 +724,10 @@ const els = {
   profileForm: document.querySelector("#profileForm"),
   groupEditorList: document.querySelector("#groupEditorList"),
   linkEditorList: document.querySelector("#linkEditorList"),
+  linkGroupEditorList: document.querySelector("#linkGroupEditorList"),
+  linkGroupPageTitle: document.querySelector("#linkGroupPageTitle"),
+  linkGroupPageCount: document.querySelector("#linkGroupPageCount"),
+  addWebsiteButton: document.querySelector("#addWebsiteButton"),
   quickAccessEditorBody: document.querySelector("#quickAccessEditorBody"),
   backgroundImageInput: document.querySelector("#backgroundImageInput"),
   clearBackgroundButton: document.querySelector("#clearBackgroundButton"),
@@ -665,6 +745,12 @@ const els = {
   groupLinksModal: document.querySelector("#groupLinksModal"),
   groupLinksModalTitle: document.querySelector("#groupLinksModalTitle"),
   groupLinksModalBody: document.querySelector("#groupLinksModalBody"),
+  groupAddChoiceBody: document.querySelector("#groupAddChoiceBody"),
+  groupAddChoiceTitle: document.querySelector("#groupAddChoiceTitle"),
+  uncategorizedImportTitle: document.querySelector("#uncategorizedImportTitle"),
+  uncategorizedImportHint: document.querySelector("#uncategorizedImportHint"),
+  uncategorizedImportList: document.querySelector("#uncategorizedImportList"),
+  confirmUncategorizedImportButton: document.querySelector("#confirmUncategorizedImportButton"),
   quickAccessModal: document.querySelector("#quickAccessModal"),
   quickAccessModalTitle: document.querySelector("#quickAccessModalTitle"),
   quickAccessModalBody: document.querySelector("#quickAccessModalBody"),
@@ -697,6 +783,9 @@ let activeModalId = "";
 let weatherRequestToken = 0;
 let weatherCityMenuOpen = false;
 let activeGroupViewerId = "";
+let activeLinkEditorGroupId = UNCATEGORIZED_GROUP_ID;
+let groupAddTargetGroupId = "";
+let uncategorizedImportSelection = new Set();
 let activeSearchEngine = window.localStorage.getItem(SEARCH_ENGINE_STORAGE_KEY) || "bing";
 let customBackgroundImage = window.localStorage.getItem(BACKGROUND_IMAGE_STORAGE_KEY) || "";
 let storedThemePreference = window.localStorage.getItem(THEME_STORAGE_KEY) || "system";
@@ -713,6 +802,7 @@ const EDITOR_PAGE_META = {
   notes: { eyebrowKey: "settings.title", titleKey: "settings.notes" },
   groups: { eyebrowKey: "settings.title", titleKey: "settings.groups" },
   links: { eyebrowKey: "settings.title", titleKey: "settings.links" },
+  linksGroup: { eyebrowKey: "settings.links", titleKey: "settings.links" },
   quickAccess: { eyebrowKey: "settings.title", titleKey: "quickAccess.title" },
   background: { eyebrowKey: "settings.title", titleKey: "settings.background" },
   language: { eyebrowKey: "settings.title", titleKey: "settings.language" },
@@ -739,6 +829,53 @@ function t(key, replacements = {}) {
     (text, [name, value]) => text.replaceAll(`{${name}}`, String(value)),
     template,
   );
+}
+
+function isInternalGroupId(groupId) {
+  return groupId === UNCATEGORIZED_GROUP_ID;
+}
+
+function isInternalGroup(group) {
+  return isInternalGroupId(group?.id);
+}
+
+function getDisplayGroupTitle(group) {
+  if (!group) return "";
+  return isInternalGroup(group) ? t("settings.uncategorizedGroup") : group.title;
+}
+
+function getHomepageGroups() {
+  return state.groups.filter((group) => !isInternalGroup(group));
+}
+
+function getGroupManagerGroups() {
+  return state.groups.filter((group) => !isInternalGroup(group));
+}
+
+function getWebsiteManagerGroups() {
+  return state.groups;
+}
+
+function getActiveLinkEditorGroup() {
+  return state.groups.find((group) => group.id === activeLinkEditorGroupId) || state.groups.find((group) => isInternalGroup(group));
+}
+
+function getUncategorizedGroup() {
+  return state.groups.find((group) => group.id === UNCATEGORIZED_GROUP_ID);
+}
+
+function getGroupAddTargetGroup() {
+  return state.groups.find((group) => group.id === groupAddTargetGroupId) || null;
+}
+
+function findLinkLocation(linkId) {
+  for (const group of state.groups) {
+    const link = group.links.find((entry) => entry.id === linkId);
+    if (link) {
+      return { group, link };
+    }
+  }
+  return null;
 }
 
 function applyStaticTranslations() {
@@ -1417,7 +1554,7 @@ function renderHero() {
 }
 
 function renderGroups() {
-  const groupCards = state.groups
+  const groupCards = getHomepageGroups()
     .map((group) => {
       const tone = getSoftGroupTone(group.accent);
       const toneStyle = getToneStyleVariables(tone);
@@ -1426,7 +1563,7 @@ function renderGroups() {
           class="group-card group-card--launcher"
           type="button"
           data-group-launch="${escapeHtml(group.id)}"
-          aria-label="${escapeHtml(t("home.openGroup", { title: group.title }))}"
+          aria-label="${escapeHtml(t("home.openGroup", { title: getDisplayGroupTitle(group) }))}"
         >
           <div class="group-card__header">
             <span class="group-card__badge group-card__badge--launcher"${toneStyle ? ` style="${escapeHtml(toneStyle)}"` : ""}>
@@ -1435,7 +1572,7 @@ function renderGroups() {
               </span>
             </span>
             <span class="group-card__title-wrap">
-              <h4 class="group-card__title">${escapeHtml(group.title)}</h4>
+              <h4 class="group-card__title">${escapeHtml(getDisplayGroupTitle(group))}</h4>
               <span class="group-card__count">${escapeHtml(t(group.links.length === 1 ? "home.siteCountOne" : "home.siteCount", { count: group.links.length }))}</span>
             </span>
             <span class="group-card__open material-symbols-rounded" aria-hidden="true">arrow_forward</span>
@@ -1473,11 +1610,11 @@ function renderGroupViewer() {
   const group = state.groups.find((entry) => entry.id === activeGroupViewerId);
   if (!group) {
     els.groupLinksModalTitle.textContent = t("home.groupLinks");
-    els.groupLinksModalBody.innerHTML = `<div class="is-empty">${escapeHtml(t("settings.linksEmpty"))}</div>`;
+    els.groupLinksModalBody.innerHTML = `<div class="is-empty">${escapeHtml(t("home.groupEmpty"))}</div>`;
     return;
   }
 
-  els.groupLinksModalTitle.textContent = group.title;
+  els.groupLinksModalTitle.textContent = getDisplayGroupTitle(group);
   const tone = getSoftGroupTone(group.accent);
   els.groupLinksModalBody.innerHTML = `
     <div class="group-links-modal__grid">
@@ -1502,7 +1639,7 @@ function renderGroupViewer() {
                 `,
               )
               .join("")
-          : `<div class="is-empty">${escapeHtml(t("settings.linksEmpty"))}</div>`
+          : `<div class="is-empty">${escapeHtml(t("home.groupEmpty"))}</div>`
       }
       <button
         class="group-links-modal__add"
@@ -1517,6 +1654,71 @@ function renderGroupViewer() {
   `;
 
   hydrateFaviconIcons(els.groupLinksModalBody);
+}
+
+function renderGroupAddChoiceModal() {
+  const group = getGroupAddTargetGroup();
+  if (!group || !els.groupAddChoiceBody) return;
+
+  els.groupAddChoiceTitle.textContent = t("modal.addLinkChoice", { title: getDisplayGroupTitle(group) });
+  els.groupAddChoiceBody.innerHTML = `
+    <button class="editor-nav-card group-add-choice-card" type="button" data-group-add-choice="new">
+      <span class="editor-nav-card__copy">
+        <strong>${escapeHtml(t("modal.addLinkNew"))}</strong>
+        <span>${escapeHtml(t("modal.addLinkNewHint"))}</span>
+      </span>
+      <span class="material-symbols-rounded editor-nav-card__icon" aria-hidden="true">chevron_right</span>
+    </button>
+    <button class="editor-nav-card group-add-choice-card" type="button" data-group-add-choice="import">
+      <span class="editor-nav-card__copy">
+        <strong>${escapeHtml(t("modal.addLinkImport"))}</strong>
+        <span>${escapeHtml(t("modal.addLinkImportHint"))}</span>
+      </span>
+      <span class="material-symbols-rounded editor-nav-card__icon" aria-hidden="true">chevron_right</span>
+    </button>
+  `;
+}
+
+function renderUncategorizedImportModal() {
+  const targetGroup = getGroupAddTargetGroup();
+  if (!targetGroup || !els.uncategorizedImportList) return;
+
+  const uncategorizedLinks = getUncategorizedGroup()?.links || [];
+  uncategorizedImportSelection = new Set(
+    [...uncategorizedImportSelection].filter((linkId) => uncategorizedLinks.some((link) => link.id === linkId)),
+  );
+  els.uncategorizedImportTitle.textContent = t("modal.addLinkImport");
+  els.uncategorizedImportHint.textContent = t("modal.importHint", { title: getDisplayGroupTitle(targetGroup) });
+  els.confirmUncategorizedImportButton.disabled = !uncategorizedLinks.length || uncategorizedImportSelection.size === 0;
+
+  if (!uncategorizedLinks.length) {
+    els.uncategorizedImportList.innerHTML = `<div class="is-empty">${escapeHtml(t("modal.importEmpty"))}</div>`;
+    return;
+  }
+
+  els.uncategorizedImportList.innerHTML = uncategorizedLinks
+    .map(
+      (link) => `
+        <label class="group-import-option">
+          <span class="group-import-option__main">
+            ${iconMarkup(link)}
+            <span class="group-import-option__text">
+              <strong>${escapeHtml(link.title)}</strong>
+            </span>
+          </span>
+          <input
+            class="group-import-option__checkbox"
+            type="checkbox"
+            value="${escapeHtml(link.id)}"
+            data-import-link-id="${escapeHtml(link.id)}"
+            ${uncategorizedImportSelection.has(link.id) ? "checked" : ""}
+          />
+        </label>
+      `,
+    )
+    .join("");
+
+  hydrateFaviconIcons(els.uncategorizedImportList);
 }
 
 function hydrateFaviconIcons(root = els.groupGrid) {
@@ -1620,7 +1822,7 @@ function getSavedLinks() {
     group.links.map((link) => ({
       ...link,
       groupId: group.id,
-      groupTitle: group.title,
+      groupTitle: getDisplayGroupTitle(group),
     })),
   );
 }
@@ -1908,17 +2110,19 @@ function renderBackgroundControls() {
 }
 
 function renderGroupEditor() {
-  if (!state.groups.length) {
+  const groups = getGroupManagerGroups();
+
+  if (!groups.length) {
     els.groupEditorList.innerHTML = `<div class="is-empty">${escapeHtml(t("settings.groupsEmpty"))}</div>`;
     return;
   }
 
-  els.groupEditorList.innerHTML = state.groups
+  els.groupEditorList.innerHTML = groups
     .map(
       (group, index) => `
         <div class="editor-item">
           <div class="editor-item__meta">
-            <strong>${escapeHtml(group.title)}</strong>
+            <strong>${escapeHtml(getDisplayGroupTitle(group))}</strong>
             <div>${escapeHtml(t(group.links.length === 1 ? "home.siteCountOne" : "home.siteCount", { count: group.links.length }))}</div>
           </div>
           <div class="editor-item__actions">
@@ -1937,7 +2141,7 @@ function renderGroupEditor() {
               icon: "arrow_downward_alt",
               label: t("common.down"),
               attrs: `data-action="move-group-down" data-group-id="${escapeHtml(group.id)}"`,
-              disabled: index === state.groups.length - 1,
+              disabled: index === groups.length - 1,
             })}
             ${renderEditorActionButton({
               icon: "delete",
@@ -1953,50 +2157,88 @@ function renderGroupEditor() {
 }
 
 function renderLinkEditor() {
-  const rows = state.groups.flatMap((group) =>
-    group.links.map((link, index) => ({ group, link, index })),
-  );
+  const groups = getWebsiteManagerGroups();
 
-  if (!rows.length) {
-    els.linkEditorList.innerHTML = `<div class="is-empty">${escapeHtml(t("settings.linksEmpty"))}</div>`;
-    return;
-  }
+  els.addWebsiteButton?.setAttribute("aria-label", t("settings.addWebsite"));
+  els.addWebsiteButton?.setAttribute("title", t("settings.addWebsite"));
 
-  els.linkEditorList.innerHTML = rows
-    .map(
-      ({ group, link }) => `
-        <div class="link-editor-row">
-          <div class="link-editor-row__main">
-            ${iconMarkup(link, "rgba(255, 255, 255, 0.16)")}
-            <div class="link-editor-row__text">
-              <strong>${escapeHtml(link.title)}</strong>
+  els.linkEditorList.innerHTML = groups
+    .map((group) => {
+      const tone = getSoftGroupTone(group.accent);
+      const toneStyle = getToneStyleVariables(tone);
+      const countLabel = t(group.links.length === 1 ? "home.siteCountOne" : "home.siteCount", { count: group.links.length });
+      return `
+        <button
+          class="editor-item link-editor-group-card"
+          type="button"
+          data-action="open-link-group"
+          data-group-id="${escapeHtml(group.id)}"
+        >
+          <div class="link-editor-group-card__main">
+            <span class="group-card__badge link-editor-group-card__badge" style="${escapeHtml(toneStyle)}">
+              <span class="material-symbols-rounded group-card__symbol" aria-hidden="true">${escapeHtml(getGroupSymbol(group))}</span>
+            </span>
+            <div class="editor-item__meta">
+              <strong>${escapeHtml(getDisplayGroupTitle(group))}</strong>
+              <div>${escapeHtml(countLabel)}</div>
             </div>
           </div>
-          <div class="link-editor-row__actions">
-            ${renderEditorActionButton({
-              icon: "edit",
-              label: t("common.edit"),
-              attrs: `data-action="edit-link" data-group-id="${escapeHtml(group.id)}" data-link-id="${escapeHtml(link.id)}"`,
-            })}
-            ${renderEditorActionButton({
-              icon: "delete",
-              label: t("common.delete"),
-              attrs: `data-action="delete-link" data-group-id="${escapeHtml(group.id)}" data-link-id="${escapeHtml(link.id)}"`,
-              tone: "danger",
-            })}
-          </div>
-        </div>
-      `,
-    )
+          <span class="material-symbols-rounded link-editor-group-card__icon" aria-hidden="true">chevron_right</span>
+        </button>
+      `;
+    })
     .join("");
-  hydrateFaviconIcons(els.linkEditorList);
+}
+
+function renderLinkEditorGroupPage() {
+  const group = getActiveLinkEditorGroup();
+  const links = group?.links || [];
+
+  if (els.linkGroupPageTitle) {
+    els.linkGroupPageTitle.textContent = getDisplayGroupTitle(group);
+  }
+  if (els.linkGroupPageCount) {
+    els.linkGroupPageCount.textContent = t(links.length === 1 ? "home.siteCountOne" : "home.siteCount", { count: links.length });
+  }
+
+  els.linkGroupEditorList.innerHTML = links.length
+    ? links
+        .map(
+          (link) => `
+            <div class="link-editor-row link-editor-row--card">
+              <div class="link-editor-row__main">
+                ${iconMarkup(link)}
+                <div class="link-editor-row__text">
+                  <strong>${escapeHtml(link.title)}</strong>
+                </div>
+              </div>
+              <div class="link-editor-row__actions">
+                ${renderEditorActionButton({
+                  icon: "edit",
+                  label: t("common.edit"),
+                  attrs: `data-action="edit-link" data-group-id="${escapeHtml(group.id)}" data-link-id="${escapeHtml(link.id)}"`,
+                })}
+                ${renderEditorActionButton({
+                  icon: "delete",
+                  label: t("common.delete"),
+                  attrs: `data-action="delete-link" data-group-id="${escapeHtml(group.id)}" data-link-id="${escapeHtml(link.id)}"`,
+                  tone: "danger",
+                })}
+              </div>
+            </div>
+          `,
+        )
+        .join("")
+    : `<div class="is-empty">${escapeHtml(t("settings.linksEmpty"))}</div>`;
+
+  hydrateFaviconIcons(els.linkGroupEditorList);
 }
 
 function renderLinkGroupOptions(selectedGroupId = "") {
   els.linkModalForm.elements.groupId.innerHTML = state.groups
     .map(
       (group) =>
-        `<option value="${escapeHtml(group.id)}" ${group.id === selectedGroupId ? "selected" : ""}>${escapeHtml(group.title)}</option>`,
+        `<option value="${escapeHtml(group.id)}" ${group.id === selectedGroupId ? "selected" : ""}>${escapeHtml(getDisplayGroupTitle(group))}</option>`,
     )
     .join("");
 }
@@ -2022,12 +2264,16 @@ function render() {
   renderLanguageControls();
   renderGroupEditor();
   renderLinkEditor();
+  renderLinkEditorGroupPage();
+  renderGroupAddChoiceModal();
+  renderUncategorizedImportModal();
   renderEditorDrawer();
 }
 
 function openDrawer() {
   drawerOpen = true;
   currentEditorPage = "home";
+  activeLinkEditorGroupId = UNCATEGORIZED_GROUP_ID;
   resetConfirmOpen = false;
   render();
 }
@@ -2035,13 +2281,17 @@ function openDrawer() {
 function closeDrawer() {
   drawerOpen = false;
   currentEditorPage = "home";
+  activeLinkEditorGroupId = UNCATEGORIZED_GROUP_ID;
   resetConfirmOpen = false;
   quickAccessSearchQuery = "";
   render();
 }
 
-function openEditorPage(page) {
+function openEditorPage(page, options = {}) {
   if (!EDITOR_PAGE_META[page]) return;
+  if (page === "linksGroup") {
+    activeLinkEditorGroupId = options.groupId || activeLinkEditorGroupId || UNCATEGORIZED_GROUP_ID;
+  }
   currentEditorPage = page;
   resetConfirmOpen = false;
   render();
@@ -2055,7 +2305,7 @@ function renderEditorDrawer() {
     els.editorDrawerEyebrow.textContent = t(meta.eyebrowKey);
   }
   if (els.editorDrawerTitle) {
-    els.editorDrawerTitle.textContent = t(meta.titleKey);
+    els.editorDrawerTitle.textContent = currentEditorPage === "linksGroup" ? getDisplayGroupTitle(getActiveLinkEditorGroup()) : t(meta.titleKey);
   }
   if (els.editorBackButton) {
     els.editorBackButton.hidden = currentEditorPage === "home";
@@ -2095,6 +2345,45 @@ function closeModal(modalId) {
     stillOpen.classList.add("is-topmost");
     activeModalId = stillOpen.id;
   }
+}
+
+function resetGroupAddFlow() {
+  groupAddTargetGroupId = "";
+  uncategorizedImportSelection = new Set();
+}
+
+function openGroupAddChoiceModal(groupId) {
+  groupAddTargetGroupId = groupId || activeGroupViewerId;
+  uncategorizedImportSelection = new Set();
+  renderGroupAddChoiceModal();
+  openModal("groupAddChoiceModal");
+}
+
+function openUncategorizedImportModal() {
+  uncategorizedImportSelection = new Set();
+  renderUncategorizedImportModal();
+  openModal("uncategorizedImportModal");
+}
+
+function importSelectedUncategorizedLinks() {
+  const targetGroup = getGroupAddTargetGroup();
+  if (!targetGroup || uncategorizedImportSelection.size === 0) return;
+
+  let nextState = state;
+  for (const linkId of uncategorizedImportSelection) {
+    const uncategorizedGroup = nextState.groups.find((group) => group.id === UNCATEGORIZED_GROUP_ID);
+    const fullLink = uncategorizedGroup?.links.find((entry) => entry.id === linkId);
+    if (!fullLink) continue;
+    nextState = upsertLink(nextState, {
+      ...fullLink,
+      groupId: targetGroup.id,
+    });
+  }
+
+  resetGroupAddFlow();
+  closeModal("uncategorizedImportModal");
+  closeModal("groupAddChoiceModal");
+  persist(nextState);
 }
 
 async function readFileAsDataUrl(file) {
@@ -2141,11 +2430,14 @@ function openGroupModal(group) {
 }
 
 function openLinkModal(groupId, link, options = {}) {
-  linkModalGroupLocked = Boolean(options.lockGroup && !link);
-  els.linkModalTitle.textContent = t(link ? "modal.editLink" : "modal.addLink");
+  const mode = options.mode || (link ? "edit" : "group-add");
+  linkModalGroupLocked = Boolean(options.lockGroup && !link) || mode === "settings-add";
+  els.linkModalTitle.textContent = t(
+    options.titleKey || (mode === "move" ? "modal.moveLink" : link ? "modal.editLink" : "modal.addLink"),
+  );
   els.linkModalForm.reset();
   els.linkModalForm.elements.id.value = link?.id || "";
-  renderLinkGroupOptions(groupId || link?.groupId || state.groups[0]?.id || "");
+  renderLinkGroupOptions(groupId || link?.groupId || UNCATEGORIZED_GROUP_ID);
   els.linkModalForm.elements.title.value = link?.title || "";
   els.linkModalForm.elements.url.value = link?.url || "";
   if (els.linkGroupField) {
@@ -2196,7 +2488,7 @@ function handleGroupEditorAction(event) {
   if (action === "edit-group") openGroupModal(group);
   if (action === "move-group-up") persist(moveGroup(state, groupId, "up"));
   if (action === "move-group-down") persist(moveGroup(state, groupId, "down"));
-  if (action === "delete-group" && window.confirm(`Delete the "${group.title}" group and its links?`)) {
+  if (action === "delete-group" && window.confirm(t("confirm.deleteGroupMove", { title: getDisplayGroupTitle(group) }))) {
     persist(deleteGroup(state, groupId));
   }
 }
@@ -2206,16 +2498,23 @@ function handleLinkEditorAction(event) {
   if (!button) return;
 
   const action = button.dataset.action;
+  if (action === "open-link-group") {
+    openEditorPage("linksGroup", { groupId: button.dataset.groupId });
+    return;
+  }
+  if (action === "add-link-primary") {
+    openLinkModal(UNCATEGORIZED_GROUP_ID, null, { mode: "settings-add", lockGroup: true });
+    return;
+  }
   const groupId = button.dataset.groupId;
   const linkId = button.dataset.linkId;
   const group = state.groups.find((entry) => entry.id === groupId);
   const link = group?.links.find((entry) => entry.id === linkId);
   if (!group || !link) return;
 
-  if (action === "edit-link") openLinkModal(groupId, { ...link, groupId });
-  if (action === "move-link-up") persist(moveLink(state, groupId, linkId, "up"));
-  if (action === "move-link-down") persist(moveLink(state, groupId, linkId, "down"));
-  if (action === "delete-link" && window.confirm(`Delete the "${link.title}" link?`)) {
+  if (action === "edit-link") openLinkModal(groupId, { ...link, groupId }, { mode: "edit" });
+  if (action === "move-link") openLinkModal(groupId, { ...link, groupId }, { mode: "move", titleKey: "modal.moveLink" });
+  if (action === "delete-link" && window.confirm(t("confirm.deleteLink", { title: link.title }))) {
     persist(deleteLink(state, groupId, linkId));
   }
 }
@@ -2243,7 +2542,7 @@ function handleShortcutClick(event) {
   if (addButton) {
     event.preventDefault();
     const groupId = addButton.getAttribute("data-add-link-group") || activeGroupViewerId;
-    openLinkModal(groupId, null, { lockGroup: true });
+    openGroupAddChoiceModal(groupId);
     return;
   }
 
@@ -2286,13 +2585,42 @@ els.languageSelect?.addEventListener("change", (event) => {
 
 els.groupGrid.addEventListener("click", handleShortcutClick);
 els.groupLinksModalBody.addEventListener("click", handleShortcutClick);
+els.addWebsiteButton?.addEventListener("click", () => {
+  openLinkModal(UNCATEGORIZED_GROUP_ID, null, { mode: "settings-add", lockGroup: true });
+});
+els.groupAddChoiceBody?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-group-add-choice]");
+  if (!button) return;
+  const action = button.getAttribute("data-group-add-choice");
+  if (action === "new") {
+    const targetGroupId = groupAddTargetGroupId || activeGroupViewerId;
+    resetGroupAddFlow();
+    closeModal("groupAddChoiceModal");
+    openLinkModal(targetGroupId, null, { lockGroup: true, mode: "group-add" });
+    return;
+  }
+  if (action === "import") {
+    openUncategorizedImportModal();
+  }
+});
+els.uncategorizedImportList?.addEventListener("change", (event) => {
+  const input = event.target.closest("[data-import-link-id]");
+  if (!input) return;
+  if (input.checked) {
+    uncategorizedImportSelection.add(input.value);
+  } else {
+    uncategorizedImportSelection.delete(input.value);
+  }
+  renderUncategorizedImportModal();
+});
+els.confirmUncategorizedImportButton?.addEventListener("click", importSelectedUncategorizedLinks);
 els.quickAccessMenuButton?.addEventListener("click", openQuickAccessEditor);
 els.quickAccessModalBody?.addEventListener("click", handleQuickAccessAction);
 els.quickAccessEditorBody?.addEventListener("click", handleQuickAccessAction);
 els.editToggle.addEventListener("click", openDrawer);
 els.drawerBackdrop.addEventListener("click", closeDrawer);
 els.closeDrawerButton.addEventListener("click", closeDrawer);
-els.editorBackButton?.addEventListener("click", () => openEditorPage("home"));
+els.editorBackButton?.addEventListener("click", () => openEditorPage(currentEditorPage === "linksGroup" ? "links" : "home"));
 els.editorDrawer.addEventListener("click", (event) => {
   const button = event.target.closest("[data-editor-nav]");
   if (!button) return;
@@ -2346,6 +2674,7 @@ els.themeToggle?.addEventListener("click", () => {
 
 els.groupEditorList.addEventListener("click", handleGroupEditorAction);
 els.linkEditorList.addEventListener("click", handleLinkEditorAction);
+els.linkGroupEditorList?.addEventListener("click", handleLinkEditorAction);
 els.backgroundImageInput?.addEventListener("change", async (event) => {
   const file = event.target.files?.[0];
   if (!file) return;
@@ -2384,16 +2713,15 @@ els.linkModalForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const form = new FormData(els.linkModalForm);
   const selectedGroupId = els.linkModalForm.elements.groupId.value;
-  const targetGroup = state.groups.find((group) => group.id === selectedGroupId);
-  const existingLink = targetGroup?.links.find((link) => link.id === form.get("id"));
+  const existingLinkLocation = form.get("id") ? findLinkLocation(String(form.get("id"))) : null;
   persist(
     upsertLink(state, {
       id: form.get("id"),
       groupId: selectedGroupId,
       title: form.get("title"),
       url: form.get("url"),
-      description: existingLink?.description || "",
-      icon: "",
+      description: existingLinkLocation?.link.description || "",
+      icon: existingLinkLocation?.link.icon || "",
     }),
   );
   closeModal("linkModal");
@@ -2421,12 +2749,26 @@ document.querySelectorAll("[data-close-dialog]").forEach((button) => {
       activeGroupViewerId = "";
       renderGroupViewer();
     }
+    if (dialogId === "groupAddChoiceModal") {
+      resetGroupAddFlow();
+    }
+    if (dialogId === "uncategorizedImportModal") {
+      uncategorizedImportSelection = new Set();
+      renderUncategorizedImportModal();
+    }
     closeModal(dialogId);
   });
 });
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && activeModalId) {
+    if (activeModalId === "groupAddChoiceModal") {
+      resetGroupAddFlow();
+    }
+    if (activeModalId === "uncategorizedImportModal") {
+      uncategorizedImportSelection = new Set();
+      renderUncategorizedImportModal();
+    }
     closeModal(activeModalId);
   }
 });

@@ -229,8 +229,23 @@
                   <h3 data-i18n="settings.links">Links</h3>
                   <p data-i18n="settings.linksDetail">Edit, reorder, and remove existing shortcuts. Add new websites from a group popup.</p>
                 </div>
+                <button class="editor-action-button link-editor-add-button" type="button" id="addWebsiteButton">
+                  <span class="material-symbols-rounded" aria-hidden="true">add_link</span>
+                </button>
               </div>
               <div class="editor-list" id="linkEditorList"></div>
+            </section>
+          </div>
+
+          <div class="editor-detail-page" id="editorLinksGroupPage" data-editor-page="linksGroup" hidden>
+            <section class="editor-section">
+              <div class="editor-section__title-row">
+                <div>
+                  <h3 id="linkGroupPageTitle">Group</h3>
+                  <p id="linkGroupPageCount"></p>
+                </div>
+              </div>
+              <div class="editor-list" id="linkGroupEditorList"></div>
             </section>
           </div>
 
@@ -364,6 +379,35 @@
           <button class="icon-button" type="button" data-close-dialog="groupLinksModal">&times;</button>
         </div>
         <div class="group-links-modal__body" id="groupLinksModalBody"></div>
+      </div>
+    </div>
+
+    <div class="modal-shell" id="groupAddChoiceModal" aria-hidden="true">
+      <div class="modal-shell__backdrop" data-close-dialog="groupAddChoiceModal"></div>
+      <div class="modal modal--compact group-add-choice-modal" role="dialog" aria-modal="true" aria-labelledby="groupAddChoiceTitle">
+        <div class="modal__header">
+          <h3 id="groupAddChoiceTitle">添加网站</h3>
+          <button class="icon-button" type="button" data-close-dialog="groupAddChoiceModal">&times;</button>
+        </div>
+        <div class="group-add-choice-modal__body" id="groupAddChoiceBody"></div>
+      </div>
+    </div>
+
+    <div class="modal-shell" id="uncategorizedImportModal" aria-hidden="true">
+      <div class="modal-shell__backdrop" data-close-dialog="uncategorizedImportModal"></div>
+      <div class="modal group-import-modal" role="dialog" aria-modal="true" aria-labelledby="uncategorizedImportTitle">
+        <div class="modal__header">
+          <h3 id="uncategorizedImportTitle">从未分类导入</h3>
+          <button class="icon-button" type="button" data-close-dialog="uncategorizedImportModal">&times;</button>
+        </div>
+        <div class="group-import-modal__body">
+          <p class="group-import-modal__hint" id="uncategorizedImportHint"></p>
+          <div class="editor-list group-import-modal__list" id="uncategorizedImportList"></div>
+          <div class="modal__actions">
+            <button class="secondary-button" type="button" data-close-dialog="uncategorizedImportModal" data-i18n="common.cancel">Cancel</button>
+            <button class="primary-button" type="button" id="confirmUncategorizedImportButton" data-i18n="modal.importSelected">Import selected</button>
+          </div>
+        </div>
       </div>
     </div>
 

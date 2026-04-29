@@ -1,7 +1,19 @@
 (function () {
   const STORAGE_KEY = "self-direction-page-state-v2";
+  const UNCATEGORIZED_GROUP_ID = "group-uncategorized";
   const MAX_RECENT = 5;
   const MAX_QUICK_ACCESS = 5;
+
+  function createUncategorizedGroup() {
+    return {
+      id: UNCATEGORIZED_GROUP_ID,
+      title: "未分类",
+      description: "",
+      icon: "",
+      accent: "#81858d",
+      links: [],
+    };
+  }
 
   function createDefaultState() {
     return {
@@ -34,6 +46,7 @@
       recentVisits: [],
       quickAccess: [],
       groups: [
+        createUncategorizedGroup(),
         {
           id: "group-daily",
           title: "日常",
@@ -95,6 +108,23 @@
     };
   }
 
+  function ensureUncategorizedGroup(groups) {
+    const existing = Array.isArray(groups)
+      ? groups.find((group) => group.id === UNCATEGORIZED_GROUP_ID)
+      : null;
+    const uncategorized = normalizeGroup(existing || createUncategorizedGroup());
+    uncategorized.id = UNCATEGORIZED_GROUP_ID;
+    uncategorized.title = "未分类";
+    uncategorized.description = "";
+    uncategorized.icon = "";
+    uncategorized.accent = createUncategorizedGroup().accent;
+
+    return [
+      uncategorized,
+      ...(Array.isArray(groups) ? groups.filter((group) => group.id !== UNCATEGORIZED_GROUP_ID) : []),
+    ];
+  }
+
   function normalizeQuickAccessEntry(entry) {
     return {
       groupId: sanitizeText(entry && entry.groupId, ""),
@@ -133,6 +163,27 @@
     );
   }
 
+  function findGroup(groups, groupId) {
+    return groups.find((group) => group.id === groupId);
+  }
+
+  function findLinkLocation(groups, linkId) {
+    for (const group of groups) {
+      const index = group.links.findIndex((link) => link.id === linkId);
+      if (index >= 0) {
+        return { group, index, link: group.links[index] };
+      }
+    }
+    return null;
+  }
+
+  function remapQuickAccessGroup(entries, linkIds, nextGroupId) {
+    const linkIdSet = new Set(linkIds);
+    return (entries || []).map((entry) =>
+      linkIdSet.has(entry.linkId) ? { ...entry, groupId: nextGroupId } : entry,
+    );
+  }
+
   function normalizeWeather(weather, defaults) {
     const input = weather && typeof weather === "object" ? weather : {};
     const allowedStatus = new Set(["idle", "loading", "success", "error"]);
@@ -159,6 +210,7 @@
       Array.isArray(state.groups) && state.groups.length
         ? state.groups.map(normalizeGroup)
         : defaults.groups.map(normalizeGroup);
+    const groupsWithUncategorized = ensureUncategorizedGroup(groups);
 
     return {
       profile: {
@@ -186,8 +238,8 @@
             }))
             .slice(0, MAX_RECENT)
         : [],
-      quickAccess: normalizeQuickAccess(state.quickAccess, groups),
-      groups,
+      quickAccess: normalizeQuickAccess(state.quickAccess, groupsWithUncategorized),
+      groups: groupsWithUncategorized,
     };
   }
 
@@ -294,6 +346,7 @@
   function upsertGroup(state, groupInput) {
     const next = clone(state);
     const normalized = normalizeGroup(groupInput);
+    if (normalized.id === UNCATEGORIZED_GROUP_ID) return normalizeState(next);
     const index = next.groups.findIndex((group) => group.id === normalized.id);
 
     if (index >= 0) {
@@ -311,6 +364,15 @@
 
   function deleteGroup(state, groupId) {
     const next = clone(state);
+    if (groupId === UNCATEGORIZED_GROUP_ID) return normalizeState(next);
+    const removedGroup = findGroup(next.groups, groupId);
+    if (!removedGroup) return normalizeState(next);
+    const movedLinkIds = removedGroup.links.map((link) => link.id);
+    const uncategorizedGroup = findGroup(next.groups, UNCATEGORIZED_GROUP_ID);
+    if (uncategorizedGroup) {
+      uncategorizedGroup.links = [...uncategorizedGroup.links, ...removedGroup.links];
+    }
+    next.quickAccess = remapQuickAccessGroup(next.quickAccess, movedLinkIds, UNCATEGORIZED_GROUP_ID);
     next.groups = next.groups.filter((group) => group.id !== groupId);
     return normalizeState(next);
   }
@@ -331,16 +393,23 @@
 
   function upsertLink(state, linkInput) {
     const next = clone(state);
-    const group = next.groups.find((entry) => entry.id === linkInput.groupId);
-    if (!group) return normalizeState(next);
-
     const normalized = normalizeLink(linkInput);
+    const group = findGroup(next.groups, linkInput.groupId);
+    if (!group) return normalizeState(next);
+    const existingLocation = findLinkLocation(next.groups, normalized.id);
+    const sourceGroupId = existingLocation ? existingLocation.group.id : "";
+    if (existingLocation) {
+      existingLocation.group.links.splice(existingLocation.index, 1);
+    }
     const index = group.links.findIndex((link) => link.id === normalized.id);
 
     if (index >= 0) {
       group.links[index] = normalized;
     } else {
       group.links.push(normalized);
+    }
+    if (sourceGroupId && sourceGroupId !== group.id) {
+      next.quickAccess = remapQuickAccessGroup(next.quickAccess, [normalized.id], group.id);
     }
 
     return normalizeState(next);
@@ -386,6 +455,7 @@
 
   window.SelfDirectionStore = {
     STORAGE_KEY,
+    UNCATEGORIZED_GROUP_ID,
     createDefaultState,
     normalizeState,
     loadState,
