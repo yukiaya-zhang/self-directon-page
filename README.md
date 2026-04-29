@@ -32,30 +32,7 @@
 - [js/store.browser.js](C:/Users/25194/Desktop/Practical_Codes/SelfDirectionPage/js/store.browser.js)：浏览器直开场景使用的存储实现
 - [tests/store.test.js](C:/Users/25194/Desktop/Practical_Codes/SelfDirectionPage/tests/store.test.js)：状态层回归测试
 
-## 部署
-
-当前仓库按 GitHub Pages 项目页方式发布，资源路径已保持为相对路径，适合部署到：
-
-`https://<username>.github.io/<repo-name>/`
-
-如果需要重新部署：
-
-1. 提交本地改动
-2. 推送到 `main`
-3. 在 GitHub 仓库的 `Settings -> Pages` 中确认来源为 `main` 分支 `/ (root)`
-
-## 验证
-
-推荐在提交前至少检查两件事：
-
-```bash
-node --test
-```
-
-- 浏览器中确认搜索、设置抽屉、分组弹窗、Quick Access、主题切换和天气组件可正常交互
-
 ## 说明
 
 - favicon 目前以前端可直接获取的地址为主，部分网站可能因为自身图标策略无法稳定返回
 - 背景图、语言、主题、快捷入口等个性化设置仅保存在当前浏览器
-- 如果后续要增强图标抓取稳定性或做多设备同步，建议在部署版上追加后端服务
