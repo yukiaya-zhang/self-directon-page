@@ -67,6 +67,7 @@
               />
                <button type="submit" data-i18n="common.search">Search</button>
             </div>
+            <div class="search-panel__suggestions" id="searchSuggestions" hidden></div>
           </form>
         </section>
 
@@ -76,7 +77,17 @@
               <p class="eyebrow" data-i18n="home.curatedAccess">Curated access</p>
               <h3 data-i18n="home.yourSpaces">Your spaces</h3>
             </div>
-            <p class="section-heading__note" data-i18n="home.controlRoom">Open links in a new tab and keep this page as your control room.</p>
+            <div class="section-heading__side">
+              <p class="section-heading__note" data-i18n="home.controlRoom">Open links in a new tab and keep this page as your control room.</p>
+              <div class="section-heading__actions">
+                <button class="icon-button icon-button--compact" type="button" id="homeAddWebsiteButton" aria-label="Add website">
+                  <span class="material-symbols-rounded" aria-hidden="true">add_link</span>
+                </button>
+                <button class="icon-button icon-button--compact" type="button" id="homeAddGroupButton" aria-label="Add group">
+                  <span class="material-symbols-rounded" aria-hidden="true">create_new_folder</span>
+                </button>
+              </div>
+            </div>
           </div>
 
           <div class="group-grid" id="groupGrid"></div>

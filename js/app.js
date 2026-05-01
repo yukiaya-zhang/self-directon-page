@@ -74,6 +74,7 @@ const TRANSLATIONS = {
     "common.url": "URL",
     "home.addGroup": "Add group",
     "home.addGroupHint": "New navigation group",
+    "home.addWebsite": "Add website",
     "home.controlRoom": "Open links in a new tab and keep this page as your control room.",
     "home.curatedAccess": "Curated access",
     "home.groupLinks": "Group links",
@@ -116,6 +117,11 @@ const TRANSLATIONS = {
     "quickAccess.current": "Selected",
     "search.aria": "Choose search engine",
     "search.current": "Current search engine: {engine}",
+    "search.directUrl": "Open URL",
+    "search.empty": "No matching saved websites.",
+    "search.groupMeta": "{group} group",
+    "search.saved": "Saved website",
+    "search.searchWeb": "Search the web",
     "search.with": "Search with {engine}",
     "settings.background": "Background",
     "settings.backgroundSummary": "Set a custom page background for this browser only.",
@@ -188,6 +194,7 @@ const TRANSLATIONS = {
     "common.url": "网址",
     "home.addGroup": "添加分类",
     "home.addGroupHint": "新建导航分组",
+    "home.addWebsite": "添加网站",
     "home.controlRoom": "在新标签页打开链接，让这里保持为你的控制台。",
     "home.curatedAccess": "快捷入口",
     "home.groupLinks": "分类网站",
@@ -230,6 +237,11 @@ const TRANSLATIONS = {
     "quickAccess.current": "已添加",
     "search.aria": "选择搜索引擎",
     "search.current": "当前搜索引擎：{engine}",
+    "search.directUrl": "打开网址",
+    "search.empty": "未找到匹配的已保存网站。",
+    "search.groupMeta": "{group} 分组",
+    "search.saved": "已保存网站",
+    "search.searchWeb": "搜索网页",
     "search.with": "使用 {engine} 搜索，或者输入网址",
     "settings.background": "背景",
     "settings.backgroundSummary": "为当前浏览器设置自定义页面背景。",
@@ -694,13 +706,17 @@ const WEATHER_LABELS = {
 };
 const els = {
   pageBackground: document.querySelector("#pageBackground"),
+  hero: document.querySelector(".hero"),
   clockDisplay: document.querySelector("#clockDisplay"),
   dateDisplay: document.querySelector("#dateDisplay"),
   searchForm: document.querySelector("#searchForm"),
   searchEngine: document.querySelector("#searchEngine"),
   searchEngineIcon: document.querySelector("#searchEngineIcon"),
   searchInput: document.querySelector("#searchInput"),
+  searchSuggestions: document.querySelector("#searchSuggestions"),
   groupGrid: document.querySelector("#groupGrid"),
+  homeAddWebsiteButton: document.querySelector("#homeAddWebsiteButton"),
+  homeAddGroupButton: document.querySelector("#homeAddGroupButton"),
   weatherWidget: document.querySelector("#weatherWidget"),
   recentList: document.querySelector("#recentList"),
   quickAccessList: document.querySelector("#quickAccessList"),
@@ -796,6 +812,10 @@ let backgroundStatusTone = "info";
 let resetConfirmOpen = false;
 let linkModalGroupLocked = false;
 let quickAccessSearchQuery = "";
+let heroSearchQuery = "";
+let searchSuggestionsOpen = false;
+let activeSearchSuggestionIndex = -1;
+let currentSearchSuggestions = [];
 
 const EDITOR_PAGE_META = {
   home: { eyebrowKey: "settings.title", titleKey: "settings.pageSettings" },
@@ -829,6 +849,23 @@ function t(key, replacements = {}) {
     (text, [name, value]) => text.replaceAll(`{${name}}`, String(value)),
     template,
   );
+}
+
+function normalizeSearchText(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function isProbablyUrl(value) {
+  const query = String(value || "").trim();
+  if (!query || /\s/.test(query)) return false;
+  if (/^https?:\/\//i.test(query)) return true;
+  return /^[^\s]+\.[^\s]+/.test(query);
+}
+
+function normalizeUrlCandidate(value) {
+  const query = String(value || "").trim();
+  if (!query) return "";
+  return /^https?:\/\//i.test(query) ? query : `https://${query}`;
 }
 
 function isInternalGroupId(groupId) {
@@ -889,6 +926,10 @@ function applyStaticTranslations() {
   els.closeDrawerButton?.setAttribute("aria-label", t("settings.closeEditor"));
   els.quickAccessMenuButton?.setAttribute("aria-label", t("quickAccess.edit"));
   els.quickAccessMenuButton?.setAttribute("title", t("quickAccess.edit"));
+  els.homeAddWebsiteButton?.setAttribute("aria-label", t("home.addWebsite"));
+  els.homeAddWebsiteButton?.setAttribute("title", t("home.addWebsite"));
+  els.homeAddGroupButton?.setAttribute("aria-label", t("home.addGroup"));
+  els.homeAddGroupButton?.setAttribute("title", t("home.addGroup"));
 }
 
 function persistLanguage(language) {
@@ -1543,13 +1584,16 @@ function renderClock() {
 }
 
 function renderHero() {
-  els.searchInput.value = "";
   const engine = SEARCH_ENGINES[activeSearchEngine] || SEARCH_ENGINES.bing;
   els.searchEngine.value = activeSearchEngine;
   els.searchEngine.title = t("search.current", { engine: engine.label });
   els.searchEngineIcon.src = engine.iconUrl;
   els.searchEngineIcon.alt = `${engine.label} icon`;
   els.searchInput.placeholder = t("search.with", { engine: engine.label });
+  if (els.searchInput.value !== heroSearchQuery) {
+    els.searchInput.value = heroSearchQuery;
+  }
+  renderSearchSuggestions();
   updateThemeToggleUi();
 }
 
@@ -1581,27 +1625,7 @@ function renderGroups() {
       `;
     })
     .join("");
-  const addGroupCard = `
-    <button
-      class="group-card group-card--launcher group-card--add"
-      type="button"
-      data-add-group
-      aria-label="${escapeHtml(t("home.addGroup"))}"
-      title="${escapeHtml(t("home.addGroup"))}"
-    >
-      <div class="group-card__header">
-        <span class="group-card__badge group-card__badge--launcher group-card__badge--add">
-          <span class="material-symbols-rounded group-card__symbol" aria-hidden="true">create_new_folder</span>
-        </span>
-        <span class="group-card__title-wrap">
-          <h4 class="group-card__title">${escapeHtml(t("home.addGroup"))}</h4>
-          <span class="group-card__count">${escapeHtml(t("home.addGroupHint"))}</span>
-        </span>
-        <span class="group-card__open material-symbols-rounded" aria-hidden="true">add</span>
-      </div>
-    </button>
-  `;
-  els.groupGrid.innerHTML = `${groupCards}${addGroupCard}`;
+  els.groupGrid.innerHTML = groupCards;
 
   renderGroupViewer();
 }
@@ -1825,6 +1849,117 @@ function getSavedLinks() {
       groupTitle: getDisplayGroupTitle(group),
     })),
   );
+}
+
+function getSearchSuggestions(query) {
+  const normalizedQuery = normalizeSearchText(query);
+  if (!normalizedQuery) return [];
+
+  const matchedLinks = getSavedLinks()
+    .filter((link) => {
+      const host = (() => {
+        try {
+          return new URL(link.url).hostname.replace(/^www\./, "");
+        } catch {
+          return link.url;
+        }
+      })();
+      return [link.title, host, link.groupTitle].some((value) =>
+        normalizeSearchText(value).includes(normalizedQuery),
+      );
+    })
+    .slice(0, 4)
+    .map((link) => ({
+      type: "link",
+      id: `${link.groupId}::${link.id}`,
+      title: link.title,
+      meta: t("search.groupMeta", { group: link.groupTitle }),
+      link,
+    }));
+
+  const suggestions = [...matchedLinks];
+  if (isProbablyUrl(query)) {
+    suggestions.push({
+      type: "url",
+      id: `url::${normalizeUrlCandidate(query)}`,
+      title: query.trim(),
+      meta: t("search.directUrl"),
+      url: normalizeUrlCandidate(query),
+    });
+  }
+  suggestions.push({
+    type: "search",
+    id: `search::${activeSearchEngine}::${normalizedQuery}`,
+    title: query.trim(),
+    meta: t("search.searchWeb"),
+  });
+  return suggestions.slice(0, 6);
+}
+
+function executeSearchSuggestion(suggestion) {
+  if (!suggestion) return;
+  if (suggestion.type === "link") {
+    persist(recordVisit(state, { title: suggestion.link.title, url: suggestion.link.url }));
+    window.open(suggestion.link.url, "_blank", "noopener,noreferrer");
+  } else if (suggestion.type === "url") {
+    window.open(suggestion.url, "_blank", "noopener,noreferrer");
+  } else {
+    const engine = SEARCH_ENGINES[activeSearchEngine] || SEARCH_ENGINES.bing;
+    window.open(engine.buildUrl(suggestion.title), "_blank", "noopener,noreferrer");
+  }
+  heroSearchQuery = "";
+  searchSuggestionsOpen = false;
+  activeSearchSuggestionIndex = -1;
+  currentSearchSuggestions = [];
+  renderHero();
+}
+
+function renderSearchSuggestions() {
+  if (!els.searchSuggestions || !els.searchInput) return;
+  currentSearchSuggestions = getSearchSuggestions(heroSearchQuery);
+  const shouldShow = searchSuggestionsOpen && heroSearchQuery.trim().length > 0;
+  els.searchSuggestions.hidden = !shouldShow;
+  if (!shouldShow) {
+    els.searchSuggestions.innerHTML = "";
+    return;
+  }
+
+  if (!currentSearchSuggestions.length) {
+    activeSearchSuggestionIndex = -1;
+    els.searchSuggestions.innerHTML = `<div class="search-suggestion search-suggestion--empty">${escapeHtml(t("search.empty"))}</div>`;
+    return;
+  }
+
+  if (activeSearchSuggestionIndex >= currentSearchSuggestions.length) {
+    activeSearchSuggestionIndex = currentSearchSuggestions.length - 1;
+  }
+
+  els.searchSuggestions.innerHTML = currentSearchSuggestions
+    .map((suggestion, index) => {
+      const isActive = index === activeSearchSuggestionIndex;
+      const icon =
+        suggestion.type === "link"
+          ? iconMarkup(suggestion.link, "rgba(11, 87, 208, 0.08)")
+          : `<span class="link-icon link-icon--system"><span class="material-symbols-rounded" aria-hidden="true">${
+              suggestion.type === "url" ? "link" : "search"
+            }</span></span>`;
+      return `
+        <button
+          class="search-suggestion${isActive ? " is-active" : ""}"
+          type="button"
+          data-search-suggestion="${escapeHtml(String(index))}"
+        >
+          ${icon}
+          <span class="search-suggestion__copy">
+            <strong>${escapeHtml(suggestion.title)}</strong>
+            <span>${escapeHtml(suggestion.meta)}</span>
+          </span>
+        </button>
+      `;
+    })
+    .join("");
+
+  hydrateFaviconIcons(els.searchSuggestions);
 }
 
 function getQuickAccessEntries() {
@@ -2568,15 +2703,68 @@ function handleShortcutClick(event) {
 
 els.searchForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  const query = els.searchInput.value.trim();
+  const query = heroSearchQuery.trim();
   if (!query) return;
-  const engine = SEARCH_ENGINES[activeSearchEngine] || SEARCH_ENGINES.bing;
-  window.open(engine.buildUrl(query), "_blank", "noopener,noreferrer");
-  els.searchInput.value = "";
+  if (currentSearchSuggestions.length && activeSearchSuggestionIndex >= 0) {
+    executeSearchSuggestion(currentSearchSuggestions[activeSearchSuggestionIndex]);
+    return;
+  }
+  if (isProbablyUrl(query)) {
+    executeSearchSuggestion({
+      type: "url",
+      title: query,
+      url: normalizeUrlCandidate(query),
+    });
+    return;
+  }
+  executeSearchSuggestion({
+    type: "search",
+    title: query,
+  });
 });
 
 els.searchEngine.addEventListener("change", (event) => {
   persistSearchEngine(event.target.value);
+});
+
+els.searchInput?.addEventListener("focus", () => {
+  searchSuggestionsOpen = heroSearchQuery.trim().length > 0;
+  renderSearchSuggestions();
+});
+
+els.searchInput?.addEventListener("input", (event) => {
+  heroSearchQuery = String(event.target.value || "");
+  searchSuggestionsOpen = heroSearchQuery.trim().length > 0;
+  activeSearchSuggestionIndex = -1;
+  renderSearchSuggestions();
+});
+
+els.searchInput?.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    searchSuggestionsOpen = false;
+    activeSearchSuggestionIndex = -1;
+    renderSearchSuggestions();
+    return;
+  }
+  if (!["ArrowDown", "ArrowUp"].includes(event.key)) return;
+  if (!currentSearchSuggestions.length) return;
+  event.preventDefault();
+  searchSuggestionsOpen = true;
+  if (event.key === "ArrowDown") {
+    activeSearchSuggestionIndex = Math.min(activeSearchSuggestionIndex + 1, currentSearchSuggestions.length - 1);
+  } else {
+    activeSearchSuggestionIndex = Math.max(activeSearchSuggestionIndex - 1, 0);
+  }
+  renderSearchSuggestions();
+});
+
+els.searchSuggestions?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-search-suggestion]");
+  if (!button) return;
+  const index = Number(button.getAttribute("data-search-suggestion"));
+  const suggestion = currentSearchSuggestions[index];
+  if (!suggestion) return;
+  executeSearchSuggestion(suggestion);
 });
 
 els.languageSelect?.addEventListener("change", (event) => {
@@ -2585,6 +2773,12 @@ els.languageSelect?.addEventListener("change", (event) => {
 
 els.groupGrid.addEventListener("click", handleShortcutClick);
 els.groupLinksModalBody.addEventListener("click", handleShortcutClick);
+els.homeAddWebsiteButton?.addEventListener("click", () => {
+  openLinkModal(UNCATEGORIZED_GROUP_ID, null, { mode: "settings-add", lockGroup: true });
+});
+els.homeAddGroupButton?.addEventListener("click", () => {
+  openGroupModal();
+});
 els.addWebsiteButton?.addEventListener("click", () => {
   openLinkModal(UNCATEGORIZED_GROUP_ID, null, { mode: "settings-add", lockGroup: true });
 });
@@ -2758,6 +2952,14 @@ document.querySelectorAll("[data-close-dialog]").forEach((button) => {
     }
     closeModal(dialogId);
   });
+});
+
+document.addEventListener("click", (event) => {
+  if (!els.searchForm?.contains(event.target)) {
+    searchSuggestionsOpen = false;
+    activeSearchSuggestionIndex = -1;
+    renderSearchSuggestions();
+  }
 });
 
 document.addEventListener("keydown", (event) => {
