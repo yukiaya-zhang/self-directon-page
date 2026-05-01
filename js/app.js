@@ -123,6 +123,30 @@ const TRANSLATIONS = {
     "search.saved": "Saved website",
     "search.searchWeb": "Search the web",
     "search.with": "Search with {engine}",
+    "groupIcon.home": "Home",
+    "groupIcon.school": "Study",
+    "groupIcon.palette": "Art",
+    "groupIcon.game": "Game",
+    "groupIcon.code": "Code",
+    "groupIcon.reading": "Reading",
+    "groupIcon.music": "Music",
+    "groupIcon.video": "Video",
+    "groupIcon.travel": "Travel",
+    "groupIcon.shopping": "Shopping",
+    "groupIcon.food": "Food",
+    "groupIcon.fitness": "Fitness",
+    "groupIcon.work": "Work",
+    "groupIcon.finance": "Finance",
+    "groupIcon.language": "Language",
+    "groupIcon.science": "Science",
+    "groupIcon.mind": "Mind",
+    "groupIcon.favorite": "Favorite",
+    "groupIcon.star": "Star",
+    "groupIcon.folder": "Folder",
+    "groupIcon.web": "Web",
+    "groupIcon.links": "Links",
+    "groupIcon.tools": "Tools",
+    "groupIcon.design": "Design",
     "settings.background": "Background",
     "settings.backgroundSummary": "Set a custom page background for this browser only.",
     "settings.backup": "Backup",
@@ -133,10 +157,12 @@ const TRANSLATIONS = {
     "settings.dangerSummary": "Reset all groups, links, notes, and recent visits for this page.",
     "settings.exportJson": "Export JSON",
     "settings.group": "Group",
+    "settings.groupIcon": "Group icon",
     "settings.groups": "Groups",
     "settings.groupsDetail": "Rename, reorder, and remove navigation sections. Add new groups from the home page.",
     "settings.groupsEmpty": "No groups yet. Add one from the home page.",
     "settings.groupsSummary": "Create, rename, reorder, and remove navigation sections.",
+    "settings.chooseGroupIcon": "Choose a group icon",
     "settings.importError": "That file could not be imported. Please choose a valid JSON export.",
     "settings.importJson": "Import JSON",
     "settings.language": "Language",
@@ -243,6 +269,30 @@ const TRANSLATIONS = {
     "search.saved": "已保存网站",
     "search.searchWeb": "搜索网页",
     "search.with": "使用 {engine} 搜索，或者输入网址",
+    "groupIcon.home": "日常",
+    "groupIcon.school": "学习",
+    "groupIcon.palette": "创作",
+    "groupIcon.game": "游戏",
+    "groupIcon.code": "编程",
+    "groupIcon.reading": "阅读",
+    "groupIcon.music": "音乐",
+    "groupIcon.video": "影视",
+    "groupIcon.travel": "旅行",
+    "groupIcon.shopping": "购物",
+    "groupIcon.food": "美食",
+    "groupIcon.fitness": "健身",
+    "groupIcon.work": "工作",
+    "groupIcon.finance": "资料",
+    "groupIcon.language": "语言",
+    "groupIcon.science": "科学",
+    "groupIcon.mind": "思考",
+    "groupIcon.favorite": "收藏",
+    "groupIcon.star": "常用",
+    "groupIcon.folder": "默认",
+    "groupIcon.web": "网络",
+    "groupIcon.links": "链接",
+    "groupIcon.tools": "工具",
+    "groupIcon.design": "设计",
     "settings.background": "背景",
     "settings.backgroundSummary": "为当前浏览器设置自定义页面背景。",
     "settings.backup": "备份",
@@ -253,10 +303,12 @@ const TRANSLATIONS = {
     "settings.dangerSummary": "重置本页的分组、链接、备注和最近访问。",
     "settings.exportJson": "导出 JSON",
     "settings.group": "分类",
+    "settings.groupIcon": "分组图标",
     "settings.groups": "分类",
     "settings.groupsDetail": "重命名、排序和删除导航分类。新增分类请从主页进入。",
     "settings.groupsEmpty": "还没有分类。请从主页添加一个分类。",
     "settings.groupsSummary": "管理导航分类的命名、排序和删除。",
+    "settings.chooseGroupIcon": "选择分组图标",
     "settings.importError": "无法导入该文件。请选择有效的 JSON 导出文件。",
     "settings.importJson": "导入 JSON",
     "settings.language": "语言",
@@ -358,6 +410,30 @@ const TRANSLATIONS = {
     "search.aria": "選擇搜尋引擎",
     "search.current": "目前搜尋引擎：{engine}",
     "search.with": "使用 {engine} 搜尋，或輸入網址",
+    "groupIcon.home": "日常",
+    "groupIcon.school": "學習",
+    "groupIcon.palette": "創作",
+    "groupIcon.game": "遊戲",
+    "groupIcon.code": "編程",
+    "groupIcon.reading": "閱讀",
+    "groupIcon.music": "音樂",
+    "groupIcon.video": "影視",
+    "groupIcon.travel": "旅行",
+    "groupIcon.shopping": "購物",
+    "groupIcon.food": "美食",
+    "groupIcon.fitness": "健身",
+    "groupIcon.work": "工作",
+    "groupIcon.finance": "資料",
+    "groupIcon.language": "語言",
+    "groupIcon.science": "科學",
+    "groupIcon.mind": "思考",
+    "groupIcon.favorite": "收藏",
+    "groupIcon.star": "常用",
+    "groupIcon.folder": "預設",
+    "groupIcon.web": "網絡",
+    "groupIcon.links": "連結",
+    "groupIcon.tools": "工具",
+    "groupIcon.design": "設計",
     "settings.background": "背景",
     "settings.backgroundSummary": "只為目前瀏覽器設定自訂頁面背景。",
     "settings.backup": "備份",
@@ -368,10 +444,12 @@ const TRANSLATIONS = {
     "settings.dangerSummary": "重置本頁的分類、連結、備註和最近訪問。",
     "settings.exportJson": "匯出 JSON",
     "settings.group": "分類",
+    "settings.groupIcon": "分組圖標",
     "settings.groups": "分類",
     "settings.groupsDetail": "重新命名、排序和刪除導航分類。新增分類請從主頁進入。",
     "settings.groupsEmpty": "尚未有分類。請從主頁新增分類。",
     "settings.groupsSummary": "管理導航分類的命名、排序和刪除。",
+    "settings.chooseGroupIcon": "選擇分組圖標",
     "settings.importError": "無法匯入此檔案。請選擇有效的 JSON 匯出檔。",
     "settings.importJson": "匯入 JSON",
     "settings.language": "語言",
@@ -471,6 +549,30 @@ const TRANSLATIONS = {
     "search.aria": "選擇搜尋引擎",
     "search.current": "目前搜尋引擎：{engine}",
     "search.with": "使用 {engine} 搜尋，或輸入網址",
+    "groupIcon.home": "日常",
+    "groupIcon.school": "學習",
+    "groupIcon.palette": "創作",
+    "groupIcon.game": "遊戲",
+    "groupIcon.code": "編程",
+    "groupIcon.reading": "閱讀",
+    "groupIcon.music": "音樂",
+    "groupIcon.video": "影視",
+    "groupIcon.travel": "旅行",
+    "groupIcon.shopping": "購物",
+    "groupIcon.food": "美食",
+    "groupIcon.fitness": "健身",
+    "groupIcon.work": "工作",
+    "groupIcon.finance": "資料",
+    "groupIcon.language": "語言",
+    "groupIcon.science": "科學",
+    "groupIcon.mind": "思考",
+    "groupIcon.favorite": "收藏",
+    "groupIcon.star": "常用",
+    "groupIcon.folder": "預設",
+    "groupIcon.web": "網路",
+    "groupIcon.links": "連結",
+    "groupIcon.tools": "工具",
+    "groupIcon.design": "設計",
     "settings.background": "背景",
     "settings.backgroundSummary": "只為目前瀏覽器設定自訂頁面背景。",
     "settings.backup": "備份",
@@ -481,10 +583,12 @@ const TRANSLATIONS = {
     "settings.dangerSummary": "重置本頁的分類、連結、備註和最近造訪。",
     "settings.exportJson": "匯出 JSON",
     "settings.group": "分類",
+    "settings.groupIcon": "分組圖標",
     "settings.groups": "分類",
     "settings.groupsDetail": "重新命名、排序和刪除導航分類。新增分類請從首頁進入。",
     "settings.groupsEmpty": "尚未有分類。請從首頁新增分類。",
     "settings.groupsSummary": "管理導航分類的命名、排序和刪除。",
+    "settings.chooseGroupIcon": "選擇分組圖標",
     "settings.importError": "無法匯入此檔案。請選擇有效的 JSON 匯出檔。",
     "settings.importJson": "匯入 JSON",
     "settings.language": "語言",
@@ -582,6 +686,30 @@ const TRANSLATIONS = {
     "search.aria": "検索エンジンを選択",
     "search.current": "現在の検索エンジン: {engine}",
     "search.with": "{engine} で検索、または URL を入力",
+    "groupIcon.home": "ホーム",
+    "groupIcon.school": "学習",
+    "groupIcon.palette": "創作",
+    "groupIcon.game": "ゲーム",
+    "groupIcon.code": "コード",
+    "groupIcon.reading": "読書",
+    "groupIcon.music": "音楽",
+    "groupIcon.video": "映像",
+    "groupIcon.travel": "旅行",
+    "groupIcon.shopping": "買い物",
+    "groupIcon.food": "食事",
+    "groupIcon.fitness": "運動",
+    "groupIcon.work": "仕事",
+    "groupIcon.finance": "資料",
+    "groupIcon.language": "言語",
+    "groupIcon.science": "科学",
+    "groupIcon.mind": "思考",
+    "groupIcon.favorite": "お気に入り",
+    "groupIcon.star": "常用",
+    "groupIcon.folder": "既定",
+    "groupIcon.web": "ウェブ",
+    "groupIcon.links": "リンク",
+    "groupIcon.tools": "ツール",
+    "groupIcon.design": "デザイン",
     "settings.background": "背景",
     "settings.backgroundSummary": "このブラウザだけのカスタム背景を設定します。",
     "settings.backup": "バックアップ",
@@ -592,10 +720,12 @@ const TRANSLATIONS = {
     "settings.dangerSummary": "このページの分類、リンク、メモ、最近の訪問をリセットします。",
     "settings.exportJson": "JSON をエクスポート",
     "settings.group": "分類",
+    "settings.groupIcon": "分類アイコン",
     "settings.groups": "分類",
     "settings.groupsDetail": "ナビゲーション分類の名前変更、並べ替え、削除を行います。新規分類はホームから追加します。",
     "settings.groupsEmpty": "分類はまだありません。ホームから分類を追加してください。",
     "settings.groupsSummary": "分類の名前変更、並べ替え、削除を管理します。",
+    "settings.chooseGroupIcon": "分類アイコンを選択",
     "settings.importError": "このファイルをインポートできません。有効な JSON エクスポートを選択してください。",
     "settings.importJson": "JSON をインポート",
     "settings.language": "言語",
@@ -665,6 +795,32 @@ const SEARCH_ENGINES = {
     },
   },
 };
+const GROUP_ICON_PRESETS = [
+  { icon: "home", labelKey: "groupIcon.home" },
+  { icon: "school", labelKey: "groupIcon.school" },
+  { icon: "palette", labelKey: "groupIcon.palette" },
+  { icon: "sports_esports", labelKey: "groupIcon.game" },
+  { icon: "code", labelKey: "groupIcon.code" },
+  { icon: "menu_book", labelKey: "groupIcon.reading" },
+  { icon: "music_note", labelKey: "groupIcon.music" },
+  { icon: "movie", labelKey: "groupIcon.video" },
+  { icon: "travel_explore", labelKey: "groupIcon.travel" },
+  { icon: "shopping_bag", labelKey: "groupIcon.shopping" },
+  { icon: "restaurant", labelKey: "groupIcon.food" },
+  { icon: "fitness_center", labelKey: "groupIcon.fitness" },
+  { icon: "work", labelKey: "groupIcon.work" },
+  { icon: "account_balance", labelKey: "groupIcon.finance" },
+  { icon: "language", labelKey: "groupIcon.language" },
+  { icon: "science", labelKey: "groupIcon.science" },
+  { icon: "psychology", labelKey: "groupIcon.mind" },
+  { icon: "favorite", labelKey: "groupIcon.favorite" },
+  { icon: "star", labelKey: "groupIcon.star" },
+  { icon: "folder", labelKey: "groupIcon.folder" },
+  { icon: "public", labelKey: "groupIcon.web" },
+  { icon: "link", labelKey: "groupIcon.links" },
+  { icon: "dashboard", labelKey: "groupIcon.tools" },
+  { icon: "brush", labelKey: "groupIcon.design" },
+];
 const WEATHER_GEOCODE_URL = "https://geocoding-api.open-meteo.com/v1/search";
 const WEATHER_FORECAST_URL = "https://api.open-meteo.com/v1/forecast";
 const WEATHER_CITY_OPTIONS = [
@@ -754,6 +910,7 @@ const els = {
   groupModal: document.querySelector("#groupModal"),
   groupModalForm: document.querySelector("#groupModalForm"),
   groupModalTitle: document.querySelector("#groupModalTitle"),
+  groupIconPicker: document.querySelector("#groupIconPicker"),
   linkModal: document.querySelector("#linkModal"),
   linkModalForm: document.querySelector("#linkModalForm"),
   linkModalTitle: document.querySelector("#linkModalTitle"),
@@ -1174,7 +1331,10 @@ function buildInitials(title) {
     .join("");
 }
 
-function getGroupSymbol(group) {
+function getGroupIcon(group) {
+  const explicitIcon = String(group?.icon || "").trim();
+  if (explicitIcon) return explicitIcon;
+
   const id = String(group?.id || "").trim();
   const title = String(group?.title || "").trim();
   const map = {
@@ -1182,13 +1342,53 @@ function getGroupSymbol(group) {
     "group-daily": "home",
     "group-learning": "school",
     "group-acg": "palette",
+    [UNCATEGORIZED_GROUP_ID]: "folder",
     全部: "apps",
     日常: "home",
     学习: "school",
     二次元: "palette",
+    未分类: "folder",
+    工作: "work",
+    編程: "code",
+    编程: "code",
+    工具: "dashboard",
+    设计: "brush",
+    設計: "brush",
+    游戏: "sports_esports",
+    遊戲: "sports_esports",
   };
 
-  return map[id] || map[title] || "apps";
+  return map[id] || map[title] || "folder";
+}
+
+function renderGroupIconPicker(selectedIcon = "folder") {
+  if (!els.groupIconPicker || !els.groupModalForm) return;
+  const nextIcon = selectedIcon || "folder";
+  els.groupModalForm.elements.icon.value = nextIcon;
+  els.groupIconPicker.setAttribute("aria-label", t("settings.chooseGroupIcon"));
+  els.groupIconPicker.innerHTML = GROUP_ICON_PRESETS
+    .map(({ icon, labelKey }) => {
+      const selected = icon === nextIcon;
+      const label = t(labelKey);
+      return `
+        <button
+          class="icon-picker__option${selected ? " is-selected" : ""}"
+          type="button"
+          role="radio"
+          aria-checked="${selected ? "true" : "false"}"
+          aria-label="${escapeHtml(`${t("settings.chooseGroupIcon")}: ${label}`)}"
+          title="${escapeHtml(label)}"
+          data-group-icon="${escapeHtml(icon)}"
+        >
+          <span class="material-symbols-rounded" aria-hidden="true">${escapeHtml(icon)}</span>
+        </button>
+      `;
+    })
+    .join("");
+}
+
+function setSelectedGroupIcon(icon) {
+  renderGroupIconPicker(icon || "folder");
 }
 
 function clampChannel(value) {
@@ -1612,7 +1812,7 @@ function renderGroups() {
           <div class="group-card__header">
             <span class="group-card__badge group-card__badge--launcher"${toneStyle ? ` style="${escapeHtml(toneStyle)}"` : ""}>
               <span class="material-symbols-rounded group-card__symbol" aria-hidden="true">
-                ${escapeHtml(getGroupSymbol(group))}
+                ${escapeHtml(getGroupIcon(group))}
               </span>
             </span>
             <span class="group-card__title-wrap">
@@ -2311,7 +2511,7 @@ function renderLinkEditor() {
         >
           <div class="link-editor-group-card__main">
             <span class="group-card__badge link-editor-group-card__badge" style="${escapeHtml(toneStyle)}">
-              <span class="material-symbols-rounded group-card__symbol" aria-hidden="true">${escapeHtml(getGroupSymbol(group))}</span>
+              <span class="material-symbols-rounded group-card__symbol" aria-hidden="true">${escapeHtml(getGroupIcon(group))}</span>
             </span>
             <div class="editor-item__meta">
               <strong>${escapeHtml(getDisplayGroupTitle(group))}</strong>
@@ -2384,6 +2584,12 @@ function renderLanguageControls() {
   }
 }
 
+function renderGroupModalControls() {
+  if (!els.groupModalForm) return;
+  const selectedIcon = els.groupModalForm.elements.icon?.value || "folder";
+  renderGroupIconPicker(selectedIcon);
+}
+
 function render() {
   applyStaticTranslations();
   renderClock();
@@ -2397,6 +2603,7 @@ function render() {
   renderProfileForm();
   renderBackgroundControls();
   renderLanguageControls();
+  renderGroupModalControls();
   renderGroupEditor();
   renderLinkEditor();
   renderLinkEditorGroupPage();
@@ -2561,6 +2768,8 @@ function openGroupModal(group) {
   els.groupModalForm.reset();
   els.groupModalForm.elements.id.value = group?.id || "";
   els.groupModalForm.elements.title.value = group?.title || "";
+  els.groupModalForm.elements.icon.value = getGroupIcon(group);
+  renderGroupIconPicker(getGroupIcon(group));
   openModal("groupModal");
 }
 
@@ -2869,6 +3078,11 @@ els.themeToggle?.addEventListener("click", () => {
 els.groupEditorList.addEventListener("click", handleGroupEditorAction);
 els.linkEditorList.addEventListener("click", handleLinkEditorAction);
 els.linkGroupEditorList?.addEventListener("click", handleLinkEditorAction);
+els.groupIconPicker?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-group-icon]");
+  if (!button) return;
+  setSelectedGroupIcon(button.getAttribute("data-group-icon") || "folder");
+});
 els.backgroundImageInput?.addEventListener("change", async (event) => {
   const file = event.target.files?.[0];
   if (!file) return;
@@ -2896,7 +3110,7 @@ els.groupModalForm.addEventListener("submit", (event) => {
       id: form.get("id"),
       title: form.get("title"),
       description: existingGroup?.description || "",
-      icon: existingGroup?.icon || "",
+      icon: String(form.get("icon") || "folder"),
       accent: existingGroup?.accent || "#1f6d67",
     }),
   );

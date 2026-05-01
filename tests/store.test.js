@@ -44,6 +44,8 @@ test("loadState falls back to defaults when storage is empty", () => {
   assert.equal(state.profile.name, "Alexandre");
   assert.equal(state.groups.length, 4);
   assert.equal(state.groups[0].id, UNCATEGORIZED_GROUP_ID);
+  assert.equal(state.groups[0].icon, "folder");
+  assert.deepEqual(visibleGroups.map((group) => group.icon), ["home", "school", "palette"]);
   assert.deepEqual(visibleGroups.map((group) => group.title), ["日常", "学习", "二次元"]);
   assert.equal(state.weather.cityName, "成都");
 });
@@ -58,6 +60,27 @@ test("saveState round-trips through storage", () => {
 
   assert.equal(JSON.parse(storage.getItem(STORAGE_KEY)).profile.name, "Navigator");
   assert.equal(loaded.profile.name, "Navigator");
+});
+
+test("loadState infers fallback group icons but preserves explicit icons", () => {
+  const storage = createStorage({
+    [STORAGE_KEY]: JSON.stringify({
+      ...createDefaultState(),
+      groups: [
+        { id: UNCATEGORIZED_GROUP_ID, title: "未分类", icon: "", accent: "#81858d", links: [] },
+        { id: "group-daily", title: "日常", icon: "", accent: "#1f6d67", links: [] },
+        { id: "group-custom", title: "工作", icon: "", accent: "#444444", links: [] },
+        { id: "group-code", title: "编程", icon: "code", accent: "#555555", links: [] },
+      ],
+    }),
+  });
+
+  const state = loadState(storage);
+
+  assert.equal(state.groups[0].icon, "folder");
+  assert.equal(state.groups.find((group) => group.id === "group-daily").icon, "home");
+  assert.equal(state.groups.find((group) => group.id === "group-custom").icon, "work");
+  assert.equal(state.groups.find((group) => group.id === "group-code").icon, "code");
 });
 
 test("upsertGroup can add and reorder groups", () => {

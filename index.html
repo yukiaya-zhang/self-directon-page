@@ -341,10 +341,16 @@
             <button class="icon-button" type="button" data-close-dialog="groupModal">&times;</button>
           </div>
           <input type="hidden" name="id" />
+          <input type="hidden" name="icon" />
           <label>
             <span data-i18n="common.title">Title</span>
             <input type="text" name="title" required />
           </label>
+          <div class="stack-form__field">
+            <span class="stack-form__field-label" data-i18n="settings.groupIcon">Group icon</span>
+            <p class="stack-form__field-hint" data-i18n="settings.chooseGroupIcon">Choose a group icon</p>
+            <div class="icon-picker" id="groupIconPicker" role="radiogroup" aria-label="Choose a group icon"></div>
+          </div>
           <div class="modal__actions">
             <button class="secondary-button" type="button" data-close-dialog="groupModal" data-i18n="common.cancel">Cancel</button>
             <button class="primary-button" type="submit" data-i18n="settings.saveGroup">Save group</button>

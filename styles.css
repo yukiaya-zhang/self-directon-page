@@ -1737,6 +1737,22 @@ body[data-theme="dark"] .search-suggestion.is-active {
   color: var(--text-soft);
 }
 
+.stack-form__field {
+  display: grid;
+  gap: 10px;
+}
+
+.stack-form__field-label {
+  font-size: 0.95rem;
+  color: var(--text-soft);
+}
+
+.stack-form__field-hint {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.88rem;
+}
+
 .stack-form input,
 .stack-form textarea,
 .stack-form select {
@@ -1778,6 +1794,83 @@ body[data-theme="dark"] .search-suggestion.is-active {
 
 .stack-form label.is-disabled select {
   cursor: not-allowed;
+}
+
+.icon-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+  gap: 10px;
+}
+
+.icon-picker__option {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 48px;
+  border-radius: 16px;
+  border: 1px solid rgba(95, 99, 104, 0.16);
+  background: var(--surface-strong);
+  color: var(--text-soft);
+  transition:
+    transform 180ms cubic-bezier(0.2, 0, 0, 1),
+    background 180ms cubic-bezier(0.2, 0, 0, 1),
+    border-color 180ms cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 180ms cubic-bezier(0.2, 0, 0, 1),
+    color 180ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.icon-picker__option .material-symbols-rounded {
+  font-size: 24px;
+  line-height: 1;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 500,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+.icon-picker__option:hover {
+  transform: translateY(-1px);
+  background: var(--surface-container-high);
+  border-color: rgba(11, 87, 208, 0.18);
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(60, 64, 67, 0.1);
+}
+
+.icon-picker__option:active {
+  transform: scale(0.985);
+}
+
+.icon-picker__option.is-selected {
+  background: var(--primary-container);
+  border-color: rgba(11, 87, 208, 0.32);
+  color: var(--primary-strong);
+  box-shadow: 0 0 0 1px rgba(11, 87, 208, 0.08);
+}
+
+.icon-picker__option:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 4px var(--focus-ring),
+    0 0 0 1px rgba(11, 87, 208, 0.2);
+}
+
+body[data-theme="dark"] .icon-picker__option {
+  background: rgba(28, 34, 43, 0.92);
+  border-color: rgba(217, 226, 235, 0.16);
+  color: rgba(237, 242, 247, 0.78);
+}
+
+body[data-theme="dark"] .icon-picker__option:hover {
+  background: rgba(35, 42, 52, 0.98);
+  border-color: rgba(168, 199, 250, 0.24);
+  color: rgba(237, 242, 247, 0.96);
+}
+
+body[data-theme="dark"] .icon-picker__option.is-selected {
+  background: rgba(168, 199, 250, 0.16);
+  border-color: rgba(168, 199, 250, 0.3);
+  color: #a8c7fa;
 }
 
 .editor-item {

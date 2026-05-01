@@ -3,12 +3,41 @@ export const UNCATEGORIZED_GROUP_ID = "group-uncategorized";
 const MAX_RECENT = 5;
 const MAX_QUICK_ACCESS = 5;
 
+const GROUP_ICON_KEYWORDS = {
+  "group-daily": "home",
+  "group-learning": "school",
+  "group-acg": "palette",
+  "group-uncategorized": "folder",
+  日常: "home",
+  学习: "school",
+  二次元: "palette",
+  工作: "work",
+  编程: "code",
+  阅读: "menu_book",
+  音乐: "music_note",
+  影视: "movie",
+  旅行: "travel_explore",
+  购物: "shopping_bag",
+  美食: "restaurant",
+  健身: "fitness_center",
+  语言: "language",
+  科学: "science",
+  收藏: "favorite",
+  常用: "star",
+  工具: "dashboard",
+  设计: "brush",
+  网络: "public",
+  链接: "link",
+  创作: "palette",
+  游戏: "sports_esports",
+};
+
 function createUncategorizedGroup() {
   return {
     id: UNCATEGORIZED_GROUP_ID,
     title: "未分类",
     description: "",
-    icon: "",
+    icon: "folder",
     accent: "#81858d",
     links: [],
   };
@@ -50,7 +79,7 @@ export function createDefaultState() {
         id: "group-daily",
         title: "日常",
         description: "",
-        icon: "",
+        icon: "home",
         accent: "#1f6d67",
         links: [],
       },
@@ -58,7 +87,7 @@ export function createDefaultState() {
         id: "group-learning",
         title: "学习",
         description: "",
-        icon: "",
+        icon: "school",
         accent: "#6b7353",
         links: [],
       },
@@ -66,7 +95,7 @@ export function createDefaultState() {
         id: "group-acg",
         title: "二次元",
         description: "",
-        icon: "",
+        icon: "palette",
         accent: "#c17747",
         links: [],
       },
@@ -80,6 +109,39 @@ export function clone(value) {
 
 function sanitizeText(value, fallback = "") {
   return typeof value === "string" && value.trim() ? value.trim() : fallback;
+}
+
+function inferGroupIcon(groupLike) {
+  const explicitIcon = sanitizeText(groupLike?.icon, "");
+  if (explicitIcon) return explicitIcon;
+
+  const id = sanitizeText(groupLike?.id, "");
+  const title = sanitizeText(groupLike?.title, "");
+  const normalizedTitle = title.toLowerCase();
+
+  if (GROUP_ICON_KEYWORDS[id]) return GROUP_ICON_KEYWORDS[id];
+  if (GROUP_ICON_KEYWORDS[title]) return GROUP_ICON_KEYWORDS[title];
+  if (normalizedTitle.includes("home")) return "home";
+  if (normalizedTitle.includes("study") || normalizedTitle.includes("learn")) return "school";
+  if (normalizedTitle.includes("code") || normalizedTitle.includes("dev")) return "code";
+  if (normalizedTitle.includes("design") || normalizedTitle.includes("art")) return "brush";
+  if (normalizedTitle.includes("work")) return "work";
+  if (normalizedTitle.includes("tool")) return "dashboard";
+  if (normalizedTitle.includes("game")) return "sports_esports";
+  if (normalizedTitle.includes("music")) return "music_note";
+  if (normalizedTitle.includes("movie") || normalizedTitle.includes("video")) return "movie";
+  if (normalizedTitle.includes("travel")) return "travel_explore";
+  if (normalizedTitle.includes("shop")) return "shopping_bag";
+  if (normalizedTitle.includes("food")) return "restaurant";
+  if (normalizedTitle.includes("fit")) return "fitness_center";
+  if (normalizedTitle.includes("lang")) return "language";
+  if (normalizedTitle.includes("science")) return "science";
+  if (normalizedTitle.includes("mind")) return "psychology";
+  if (normalizedTitle.includes("favorite")) return "favorite";
+  if (normalizedTitle.includes("star")) return "star";
+  if (normalizedTitle.includes("link")) return "link";
+  if (normalizedTitle.includes("web")) return "public";
+  return "folder";
 }
 
 function makeId(prefix = "id") {
@@ -101,7 +163,7 @@ function normalizeGroup(group) {
     id: sanitizeText(group?.id, makeId("group")),
     title: sanitizeText(group?.title, "Untitled group"),
     description: sanitizeText(group?.description, ""),
-    icon: sanitizeText(group?.icon, "•"),
+    icon: inferGroupIcon(group),
     accent: sanitizeText(group?.accent, "#1f6d67"),
     links: Array.isArray(group?.links) ? group.links.map(normalizeLink) : [],
   };
@@ -115,7 +177,7 @@ function ensureUncategorizedGroup(groups) {
   uncategorized.id = UNCATEGORIZED_GROUP_ID;
   uncategorized.title = "未分类";
   uncategorized.description = "";
-  uncategorized.icon = "";
+  uncategorized.icon = "folder";
   uncategorized.accent = createUncategorizedGroup().accent;
 
   return [
